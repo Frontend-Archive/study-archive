@@ -1,0 +1,5 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+async function render(path = "/") { const workerUrl = new URL("../dist/server/index.js", import.meta.url); workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`); const { default: worker } = await import(workerUrl.href); return worker.fetch(new Request(`http://localhost${path}`, { headers: { accept: "text/html" } }), { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } }, { waitUntil() {}, passThroughOnException() {} }); }
+test("홈을 제품 콘텐츠와 메타데이터로 렌더링한다", async () => { const response = await render(); assert.equal(response.status, 200); const html = await response.text(); assert.match(html, /Frontend Archive/); assert.match(html, /배운 것을 남기고/); assert.match(html, /회차별 아카이브/); assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/); });
+test("존재하지 않는 경로는 404다", async () => { const response = await render("/sessions/999"); assert.equal(response.status, 404); });
