@@ -7,6 +7,7 @@ const description = "프론트엔드 스터디 구성원이 매 회차 공유한
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl), title, description,
+  alternates: { types: { "application/rss+xml": "/feed.xml" } },
   keywords: ["프론트엔드", "개발자 스터디", "기술 블로그", "아카이브"],
   openGraph: { type: "website", locale: "ko_KR", siteName: "Frontend Archive", title, description, images: [{ url: "/og.png", width: 1733, height: 907, alt: "Frontend Archive" }] },
   twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
