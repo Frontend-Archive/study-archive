@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ArchiveSession } from "@/lib/archive";
 import { formatDate, parseArchiveMarkdown } from "@/lib/archive";
+import { getMemberArchiveSummary } from "@/lib/members";
 import {
   filterArchiveSessions,
   normalizeSearch,
@@ -102,5 +103,116 @@ describe("아카이브 필터", () => {
   it("알 수 없는 topic 쿼리를 무시한다", () => {
     expect(parseTopicFilter("not-a-topic")).toBe("");
     expect(parseTopicFilter("product-ux")).toBe("product-ux");
+  });
+});
+
+describe("멤버 아카이브 요약", () => {
+  const memberSessions: ArchiveSession[] = [
+    {
+      id: 3,
+      date: "2026-03-10",
+      title: "스터디 3회차",
+      type: "on-line",
+      articles: [
+        {
+          status: "pending",
+          author: "염승준",
+          title: "",
+          url: "",
+          tags: [],
+        },
+      ],
+    },
+    {
+      id: 2,
+      date: "2026-02-10",
+      title: "스터디 2회차",
+      type: "on-line",
+      articles: [
+        {
+          status: "published",
+          author: "염승준",
+          title: "React 데이터 흐름",
+          url: "https://example.com/react-data",
+          tags: ["React", "TanStack Query", "새로운 기술"],
+        },
+      ],
+    },
+    {
+      id: 1,
+      date: "2026-01-10",
+      title: "스터디 1회차",
+      type: "off-line",
+      articles: [
+        {
+          status: "published",
+          author: "염승준",
+          title: "브라우저 성능",
+          url: "https://example.com/browser-performance",
+          tags: ["JS", "성능 개선"],
+        },
+      ],
+    },
+  ];
+
+  it("입력을 바꾸지 않고 전체 슬롯을 오래된 순으로 정렬한다", () => {
+    const originalOrder = memberSessions.map((session) => session.id);
+    const summary = getMemberArchiveSummary(memberSessions, {
+      name: "염승준",
+      slug: "yeom-seungjun",
+    });
+
+    expect(summary.records.map(({ session }) => session.id)).toEqual([1, 2, 3]);
+    expect(memberSessions.map((session) => session.id)).toEqual(originalOrder);
+  });
+
+  it("게시 기록만 집계하고 활동 기간을 계산한다", () => {
+    const summary = getMemberArchiveSummary(memberSessions, {
+      name: "염승준",
+      slug: "yeom-seungjun",
+    });
+
+    expect(summary.publishedCount).toBe(2);
+    expect(summary.firstPublishedDate).toBe("2026-01-10");
+    expect(summary.latestPublishedDate).toBe("2026-02-10");
+    expect(summary.latestTopics.map((topic) => topic.slug)).toEqual([
+      "react-framework",
+      "other",
+    ]);
+  });
+
+  it("주제를 중복 없이 최근 등장 순으로 정렬하고 기타를 포함한다", () => {
+    const summary = getMemberArchiveSummary(memberSessions, {
+      name: "염승준",
+      slug: "yeom-seungjun",
+    });
+
+    expect(
+      summary.topics.map(({ topic, lastPublishedDate }) => [
+        topic.slug,
+        lastPublishedDate,
+      ]),
+    ).toEqual([
+      ["react-framework", "2026-02-10"],
+      ["other", "2026-02-10"],
+      ["web-language", "2026-01-10"],
+      ["performance-reliability", "2026-01-10"],
+    ]);
+  });
+
+  it("게시 기록이 없으면 빈 요약을 반환한다", () => {
+    const summary = getMemberArchiveSummary([memberSessions[0]], {
+      name: "염승준",
+      slug: "yeom-seungjun",
+    });
+
+    expect(summary.records).toHaveLength(1);
+    expect(summary).toMatchObject({
+      publishedCount: 0,
+      firstPublishedDate: null,
+      latestPublishedDate: null,
+      latestTopics: [],
+      topics: [],
+    });
   });
 });

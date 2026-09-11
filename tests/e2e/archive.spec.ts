@@ -21,6 +21,42 @@ test("회차와 멤버 상세로 이동할 수 있다", async ({ page }) => {
   await page.goto("/#members");
   await page.locator('a.member-card[href="/members/kwon-sihyeon"]').click();
   await expect(page.getByRole("heading", { name: /권시현/ })).toBeVisible();
+  await expect(page.getByLabel("멤버 활동 요약")).toContainText("게시 기록");
+  await expect(
+    page.getByRole("heading", { name: "관심사가 남긴 흔적" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "다음 멤버 민준경" }),
+  ).toHaveAttribute("href", "/members/min-jungyeong");
+});
+
+test("멤버의 주제 흔적에서 작성자와 주제가 결합된 기록으로 이동한다", async ({
+  page,
+}) => {
+  await page.goto("/members/kwon-sihyeon");
+  const topicLink = page.locator(
+    'a.member-topic-link[href*="topic=architecture-patterns"]',
+  );
+  await expect(topicLink).toBeVisible();
+  await topicLink.click();
+  await page.locator('[data-hydrated="true"]').waitFor();
+
+  await expect(page).toHaveURL(/author=%EA%B6%8C%EC%8B%9C%ED%98%84/);
+  await expect(page).toHaveURL(/topic=architecture-patterns/);
+  await expect(page.getByLabel("WRITER")).toHaveValue("권시현");
+  await expect(page.getByLabel("TOPIC")).toHaveValue("architecture-patterns");
+});
+
+test("멤버 학습 로그에서 회차와 원문으로 이동할 수 있다", async ({ page }) => {
+  await page.goto("/members/kwon-sihyeon");
+  const firstRecord = page.locator(".member-record").first();
+
+  await expect(
+    firstRecord.getByRole("link", { name: "ROUND 01" }),
+  ).toHaveAttribute("href", "/sessions/1");
+  await expect(
+    firstRecord.getByRole("link", { name: /새 탭에서 원문 열기/ }),
+  ).toHaveAttribute("target", "_blank");
 });
 
 test("공유된 필터 URL을 복원하고 조건을 개별 제거한다", async ({ page }) => {
@@ -100,6 +136,12 @@ test("모바일에서 모든 메뉴를 사용할 수 있고 가로로 넘치지 
     content: document.documentElement.scrollWidth,
   }));
   expect(topicWidths.content).toBeLessThanOrEqual(topicWidths.viewport);
+  await page.goto("/members/kwon-sihyeon");
+  const memberWidths = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    content: document.documentElement.scrollWidth,
+  }));
+  expect(memberWidths.content).toBeLessThanOrEqual(memberWidths.viewport);
 });
 
 test("RSS는 게시된 글만 제공한다", async ({ request }) => {
