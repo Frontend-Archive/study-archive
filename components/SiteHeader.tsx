@@ -21,6 +21,9 @@ export function SiteHeader() {
         <Link className={navLinkClassName} href="/#archive">
           Archive
         </Link>
+        <Link className={navLinkClassName} href="/#topics">
+          Topics
+        </Link>
         <Link className={navLinkClassName} href="/#members">
           Members
         </Link>

@@ -57,7 +57,7 @@ export default async function SessionPage({
         <PageHero
           eyebrow="Session archive"
           back={{ href: "/#archive", label: "← 모든 회차" }}
-          index={String(session.id).padStart(2, "0")}
+          divider={false}
           title={session.title}
           meta={
             <>

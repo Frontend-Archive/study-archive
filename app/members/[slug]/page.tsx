@@ -85,36 +85,38 @@ export default async function MemberPage({
         <PageHero
           eyebrow="Member trajectory"
           back={{ href: "/#members", label: "← 모든 멤버" }}
-          index={String(memberIndex + 1).padStart(2, "0")}
           title={
             <>
               <span className="text-accent not-italic">{member.name}</span>의 기록
             </>
           }
           description={memberDescription}
+          meta={
+            <section
+              className="flex flex-wrap items-baseline gap-x-6 gap-y-2"
+              aria-label="멤버 활동 요약"
+            >
+              <span className="flex items-baseline gap-2">
+                <span className="text-muted">게시 기록</span>
+                <strong className="font-numeral text-[15px] font-medium text-ink">
+                  {String(summary.publishedCount).padStart(2, "0")}
+                </strong>
+              </span>
+              <span className="flex items-baseline gap-2">
+                <span className="text-muted">최근 관심사</span>
+                <strong className="font-medium text-accent">
+                  {latestInterest}
+                </strong>
+              </span>
+              <span className="flex items-baseline gap-2">
+                <span className="text-muted">활동 기간</span>
+                <strong className="font-numeral text-[15px] font-medium text-accent">
+                  {activityPeriod}
+                </strong>
+              </span>
+            </section>
+          }
         />
-
-        <section
-          className="flex flex-wrap items-baseline gap-x-6 gap-y-2 border-b border-ink py-3 text-[12px] layout:py-[14px]"
-          aria-label="멤버 활동 요약"
-        >
-          <span className="flex items-baseline gap-2">
-            <span className="text-muted">게시 기록</span>
-            <strong className="font-numeral text-[15px] font-medium">
-              {String(summary.publishedCount).padStart(2, "0")}
-            </strong>
-          </span>
-          <span className="flex items-baseline gap-2">
-            <span className="text-muted">최근 관심사</span>
-            <strong className="font-medium text-accent">{latestInterest}</strong>
-          </span>
-          <span className="flex items-baseline gap-2">
-            <span className="text-muted">활동 기간</span>
-            <strong className="font-numeral text-[15px] font-medium text-accent">
-              {activityPeriod}
-            </strong>
-          </span>
-        </section>
 
         <section
           className="grid grid-cols-1 gap-12 pt-8 pb-5 layout:grid-cols-[minmax(210px,0.7fr)_minmax(0,1.3fr)] layout:gap-[6vw] layout:pt-10 wide:grid-cols-[minmax(240px,0.75fr)_minmax(0,1.25fr)] wide:gap-[9vw]"

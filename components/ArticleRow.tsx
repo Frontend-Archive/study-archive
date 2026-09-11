@@ -1,24 +1,22 @@
 import Link from "next/link";
 import { MEMBERS, type Article } from "@/lib/archive";
-import { getTopicsForTags } from "@/lib/topics";
 
 function ArticleMeta({
   author,
   sessionId,
   date,
   showDate,
+  linkClassName,
 }: {
   author: string;
   sessionId: number;
   date: string;
   showDate: boolean;
+  linkClassName: string;
 }) {
   if (showDate) {
     return (
-      <Link
-        className="inline-block border-b border-transparent py-[5px] hover:border-current hover:text-accent-soft"
-        href={`/sessions/${sessionId}`}
-      >
+      <Link className={linkClassName} href={`/sessions/${sessionId}`}>
         {date.replaceAll("-", ".")}
         <span className="sr-only"> {sessionId}회차 보기</span>
       </Link>
@@ -26,10 +24,7 @@ function ArticleMeta({
   }
   const member = MEMBERS.find((item) => item.name === author);
   return member ? (
-    <Link
-      className="inline-block border-b border-transparent py-[5px] hover:border-current hover:text-accent-soft"
-      href={`/members/${member.slug}`}
-    >
+    <Link className={linkClassName} href={`/members/${member.slug}`}>
       {author}
     </Link>
   ) : (
@@ -68,10 +63,11 @@ export function ArticleRow({
   const tagColor = variant === "detail" ? "text-muted" : "text-dark-tag";
   const tagHover =
     variant === "detail" ? "hover:text-accent" : "hover:text-paper";
-  const topicColors =
+  const metaLinkClassName = `inline-block border-b py-[5px] ${
     variant === "detail"
-      ? "border-line text-muted hover:border-accent hover:text-accent"
-      : "border-dark-line text-dark-muted hover:border-accent-soft hover:text-accent-soft";
+      ? "border-line hover:border-accent hover:text-accent"
+      : "border-dark-line hover:border-accent-soft hover:text-accent-soft"
+  }`;
   const meta = (
     <span className={`text-[12px] ${authorColor}`}>
       <ArticleMeta
@@ -79,6 +75,7 @@ export function ArticleRow({
         sessionId={sessionId}
         date={date}
         showDate={showDate}
+        linkClassName={metaLinkClassName}
       />
     </span>
   );
@@ -101,7 +98,6 @@ export function ArticleRow({
       </div>
     );
   }
-  const topics = getTopicsForTags(article.tags);
   return (
     <div className={rowClassName} data-testid="article-row">
       {meta}
@@ -132,20 +128,6 @@ export function ArticleRow({
               aria-label={`${tag} 태그로 기록 보기`}
             >
               #{tag}
-            </Link>
-          ))}
-        </span>
-        <span
-          className="mt-0.5 flex flex-wrap gap-x-3 gap-y-[6px] text-[11px] leading-[1.5] text-dark-tag"
-          aria-label="주제"
-        >
-          {topics.map((topic) => (
-            <Link
-              className={`rounded-[999px] border px-[7px] py-[3px] text-[9px] tracking-[0.05em] ${topicColors}`}
-              key={topic.slug}
-              href={`/topics/${topic.slug}`}
-            >
-              {topic.label}
             </Link>
           ))}
         </span>

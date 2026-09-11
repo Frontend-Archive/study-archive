@@ -2,14 +2,13 @@ import Link from "next/link";
 import { ArchiveExplorer } from "@/components/ArchiveExplorer";
 import {
   Eyebrow,
-  HeroAction,
   PageTitle,
   SectionHeading,
 } from "@/components/EditorialPrimitives";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getArchiveSessions, MEMBERS } from "@/lib/archive";
-import { TOPICS } from "@/lib/topics";
+import { ALL_TOPICS, getTopicsForTags, TOPICS } from "@/lib/topics";
 
 export const dynamic = "force-static";
 
@@ -35,18 +34,7 @@ export default async function Home() {
           회차·멤버·주제별로 모았습니다.
         </p>
         <div
-          className="mt-6 flex max-w-[600px] flex-wrap gap-3"
-          aria-label="빠른 탐색"
-        >
-          <HeroAction href="#archive" variant="solid">
-            최신 기록 보기 <span aria-hidden="true">↓</span>
-          </HeroAction>
-          <HeroAction href="/feed.xml">
-            RSS 구독 <span aria-hidden="true">↗</span>
-          </HeroAction>
-        </div>
-        <div
-          className="mt-8 flex max-w-[600px] flex-wrap gap-x-10 gap-y-3 border-t border-ink pt-4 layout:mt-10"
+          className="mt-7 flex max-w-[600px] flex-wrap gap-x-10 gap-y-3 layout:mt-8"
           aria-label="아카이브 현황"
         >
           {[
@@ -83,6 +71,14 @@ export default async function Home() {
               우리의 배움을 발견하세요.
             </>
           }
+          action={
+            <a
+              className="inline-flex shrink-0 items-center gap-2 border-b border-dark-control pb-1 text-[11px] tracking-[0.04em] text-paper hover:border-accent-soft hover:text-accent-soft"
+              href="/feed.xml"
+            >
+              RSS 구독 <span aria-hidden="true">↗</span>
+            </a>
+          }
           tone="dark"
         />
         <ArchiveExplorer
@@ -94,6 +90,53 @@ export default async function Home() {
 
       <section
         className="mx-auto max-w-[1280px] px-5 pt-[76px] pb-[90px] layout:px-8 layout:pt-[104px] layout:pb-[120px]"
+        id="topics"
+      >
+        <SectionHeading
+          eyebrow="Browse by topic"
+          title="주제로 읽기"
+          description="관심 있는 흐름을 골라 기록을 모아 보세요."
+          tone="light"
+        />
+        <ol className="m-0 grid list-none grid-cols-1 gap-x-[6vw] p-0 layout:grid-cols-2">
+          {ALL_TOPICS.map((topic) => {
+            const count = sessions
+              .flatMap((session) => session.articles)
+              .filter(
+                (article) =>
+                  article.status === "published" &&
+                  getTopicsForTags(article.tags).some(
+                    (item) => item.slug === topic.slug,
+                  ),
+              ).length;
+
+            return (
+              <li className="border-b border-line" key={topic.slug}>
+                <Link
+                  className="group grid grid-cols-[minmax(0,1fr)_auto_20px] items-center gap-x-4 py-[18px]"
+                  href={`/topics/${topic.slug}`}
+                >
+                  <strong className="font-editorial text-lg leading-[1.35] font-medium transition-[color,transform] duration-200 group-hover:translate-x-1 group-hover:text-accent motion-reduce:transition-none">
+                    {topic.label}
+                  </strong>
+                  <span className="text-[11px] text-muted">
+                    {String(count).padStart(2, "0")}개의 기록
+                  </span>
+                  <span
+                    className="justify-self-end font-numeral text-lg leading-none text-accent transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  >
+                    →
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+
+      <section
+        className="mx-auto max-w-[1280px] px-5 pb-[90px] layout:px-8 layout:pb-[120px]"
         id="members"
       >
         <SectionHeading

@@ -59,6 +59,7 @@ export default async function TopicPage({
         <PageHero
           eyebrow="Topic archive"
           back={{ href: "/#archive", label: "← 모든 기록" }}
+          divider={false}
           title={
             <>
               <span className="text-accent not-italic">{topic.label}</span> 기록

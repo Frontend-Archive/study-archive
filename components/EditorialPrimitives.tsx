@@ -60,7 +60,7 @@ export function PageHero({
   description,
   meta,
   back,
-  index,
+  divider = true,
   variant = "page",
 }: {
   eyebrow: ReactNode;
@@ -68,11 +68,16 @@ export function PageHero({
   description?: ReactNode;
   meta?: ReactNode;
   back?: { href: string; label: string };
-  index?: string;
+  divider?: boolean;
   variant?: "home" | "page";
 }) {
   return (
-    <header className="border-b border-ink pb-7 layout:pb-8">
+    <header
+      className={joinClasses(
+        "pb-7 layout:pb-8",
+        divider ? "border-b border-ink" : undefined,
+      )}
+    >
       <div className="mb-6 flex items-center justify-between gap-4 layout:mb-7">
         {back ? (
           <Link
@@ -84,17 +89,7 @@ export function PageHero({
         ) : (
           <span />
         )}
-        <div className="flex items-baseline gap-3">
-          <Eyebrow>{eyebrow}</Eyebrow>
-          {index && (
-            <span
-              className="font-numeral text-[15px] leading-none font-medium text-accent"
-              aria-hidden="true"
-            >
-              {index}
-            </span>
-          )}
-        </div>
+        <Eyebrow>{eyebrow}</Eyebrow>
       </div>
       <PageTitle variant={variant} className="max-w-[900px]">
         {title}
@@ -113,37 +108,17 @@ export function PageHero({
   );
 }
 
-export function HeroAction({
-  href,
-  children,
-  variant = "outline",
-}: {
-  href: string;
-  children: ReactNode;
-  variant?: "solid" | "outline";
-}) {
-  return (
-    <a
-      className={joinClasses(
-        "inline-flex min-w-[148px] flex-1 items-center justify-between gap-6 border border-ink px-[15px] py-[13px] text-[11px] tracking-[0.04em] transition-[background,color] duration-200 hover:bg-ink hover:text-paper motion-reduce:transition-none layout:flex-none layout:min-w-[170px]",
-        variant === "solid" ? "bg-ink text-paper" : undefined,
-      )}
-      href={href}
-    >
-      {children}
-    </a>
-  );
-}
-
 export function SectionHeading({
   eyebrow,
   title,
   description,
+  action,
   tone,
 }: {
   eyebrow: ReactNode;
   title: ReactNode;
   description: ReactNode;
+  action?: ReactNode;
   tone: "dark" | "light";
 }) {
   const border = tone === "dark" ? "border-dark-line" : "border-ink";
@@ -162,14 +137,17 @@ export function SectionHeading({
           {title}
         </h2>
       </div>
-      <p
-        className={joinClasses(
-          "hidden text-sm leading-[1.6] layout:block",
-          copy,
-        )}
-      >
-        {description}
-      </p>
+      <div className="flex shrink-0 flex-col items-end gap-3">
+        <p
+          className={joinClasses(
+            "hidden text-sm leading-[1.6] layout:block",
+            copy,
+          )}
+        >
+          {description}
+        </p>
+        {action}
+      </div>
     </div>
   );
 }
@@ -216,7 +194,7 @@ export function ArchivePager({
 
   return (
     <nav
-      className="mt-[60px] grid grid-cols-2 border-t border-ink layout:mt-20"
+      className="mt-10 grid grid-cols-2 layout:mt-12"
       aria-label={variant === "member" ? "멤버 이동" : "회차 이동"}
     >
       {previous ? (

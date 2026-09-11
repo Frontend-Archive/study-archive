@@ -98,7 +98,7 @@ test("결과가 없을 때 조건을 보여주고 다시 제거할 수 있다", 
   await expect(page.getByText("최근 기록부터 천천히 거슬러 올라가 보세요.")).toBeVisible();
 });
 
-test("글에서 원문, 작성자, 태그와 주제로 이동할 수 있다", async ({ page }) => {
+test("글에서 원문, 작성자, 태그로 이동할 수 있다", async ({ page }) => {
   await page.goto("/?q=React+Compiler#archive");
   await page.locator('[data-hydrated="true"]').waitFor();
   const row = page
@@ -113,11 +113,8 @@ test("글에서 원문, 작성자, 태그와 주제로 이동할 수 있다", as
   await expect(
     row.getByRole("link", { name: "React 태그로 기록 보기" }),
   ).toHaveAttribute("href", "/?tag=React#archive");
-  await row.getByRole("link", { name: "React·프레임워크" }).click();
-  await expect(page).toHaveURL(/\/topics\/react-framework/);
-  await expect(
-    page.getByRole("heading", { name: /React·\s*프레임워크/ }),
-  ).toBeVisible();
+  await row.getByRole("link", { name: "React 태그로 기록 보기" }).click();
+  await expect(page).toHaveURL(/tag=React/);
 });
 
 test("모바일에서 모든 메뉴를 사용할 수 있고 가로로 넘치지 않는다", async ({
@@ -127,6 +124,9 @@ test("모바일에서 모든 메뉴를 사용할 수 있고 가로로 넘치지 
   await page.goto("/");
   await expect(
     page.getByRole("link", { name: "Archive", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Topics", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Members", exact: true }),
@@ -225,4 +225,13 @@ test("RSS는 게시된 글만 제공한다", async ({ request }) => {
   expect(xml).toContain("<item>");
   expect(xml).toContain("<dc:creator>");
   expect(xml).not.toContain("PREPARING");
+});
+
+test("홈 주제 목록에서 주제 페이지로 이동한다", async ({ page }) => {
+  await page.goto("/#topics");
+  await page.getByRole("link", { name: /React·프레임워크/ }).click();
+  await expect(page).toHaveURL(/\/topics\/react-framework/);
+  await expect(
+    page.getByRole("heading", { name: /React·\s*프레임워크/ }),
+  ).toBeVisible();
 });
