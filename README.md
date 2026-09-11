@@ -20,7 +20,7 @@ npm run test:e2e
 
 운영 배포 대상은 Vercel 프로젝트입니다. `npm run build`는 Next.js 표준 빌드라 별도 어댑터나 빌드 설정 없이 Vercel이 저장소를 그대로 빌드합니다.
 
-1. Vercel에 이 저장소를 연결합니다. 프레임워크 프리셋은 Next.js입니다.
+1. Vercel에 이 저장소를 연결합니다. 프레임워크는 `vercel.json`이 Next.js로 지정하므로 대시보드의 Framework Preset과 Output Directory를 따로 덮어쓰지 않습니다. 예전 Cloudflare 설정에서 남은 `dist` 같은 Output Directory 값이 있으면 지웁니다.
 2. Vercel 프로젝트 환경 변수에 `NEXT_PUBLIC_SITE_URL`을 실제 운영 도메인으로 설정합니다. 빌드 시점에 메타데이터와 사이트맵·RSS의 절대 URL로 쓰이며, 기본값은 `lib/site.ts`에 있습니다.
 3. Vercel의 deploy hook URL을 웹 저장소의 `DEPLOY_HOOK_URL` GitHub Secret에 저장합니다.
 4. 아카이브 저장소의 dispatch 대상 저장소를 이 웹 저장소로 지정하고 `BLOG_DISPATCH_TOKEN`을 설정합니다.

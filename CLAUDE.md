@@ -84,6 +84,6 @@ Next.js App Router를 표준 Next.js로 빌드한다. 이전에는 `vinext` + Vi
 
 ## 배포
 
-운영 배포 경로는 Vercel 프로젝트 하나다. 표준 Next.js 빌드라 Vercel이 저장소를 그대로 빌드하며 어댑터나 추가 설정이 없다. `redeploy.yml`은 Vercel deploy hook URL을 `DEPLOY_HOOK_URL` Secret에서 읽어 호출한다.
+운영 배포 경로는 Vercel 프로젝트 하나다. 표준 Next.js 빌드라 Vercel이 저장소를 그대로 빌드한다. `vercel.json`은 프레임워크를 Next.js로 못박는 역할만 하며, 대시보드에서 Output Directory를 덮어쓰면 빌드가 성공해도 산출물을 찾지 못해 실패한다. `redeploy.yml`은 Vercel deploy hook URL을 `DEPLOY_HOOK_URL` Secret에서 읽어 호출한다.
 
 원본 저장소의 `archives/**`가 바뀌면 `archive-updated` repository dispatch가 `redeploy.yml`을 깨워 재배포를 트리거한다.
