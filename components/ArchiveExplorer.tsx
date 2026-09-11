@@ -9,6 +9,12 @@ import {
 } from "@/lib/search";
 import type { Topic } from "@/lib/topics";
 import { ArticleRow, SessionLink } from "./ArticleRow";
+
+/**
+ * 서버 컴포넌트가 빌드 시 수집한 전체 sessions를 넘기고, 이 컴포넌트는 추가
+ * 네트워크 요청 없이 브라우저에서 검색한다. URL은 공유·새로고침·뒤로가기를
+ * 위한 영속 상태이고 React state는 즉시 렌더링하기 위한 로컬 사본이다.
+ */
 export function ArchiveExplorer({
   sessions,
   members,
@@ -66,6 +72,9 @@ export function ArchiveExplorer({
         key === "topic" ? parseTopicFilter(value) : value,
     }) as ArchiveFilters);
     const url = `${pathname}${next.size ? `?${next}` : ""}#archive`;
+
+    // 매 글자마다 방문 기록을 만들지 않도록 검색어는 replace한다. 명시적인
+    // 필터 선택은 사용자가 뒤로가기로 되돌릴 수 있도록 push한다.
     if (key === "q") window.history.replaceState(null, "", url);
     else window.history.pushState(null, "", url);
   };

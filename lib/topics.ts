@@ -1,5 +1,11 @@
 import type { ArchiveSession, PublishedArticle } from "./archive";
 
+/**
+ * 원본의 자유로운 태그와 웹의 안정적인 상위 주제를 분리하는 번역 계층이다.
+ * Markdown 태그를 고쳐 쓰지 않으므로 원본 이력은 보존되고, 화면 분류 정책은
+ * 이 파일의 명시적인 매핑만 변경해 독립적으로 발전시킬 수 있다.
+ */
+
 export type TopicSlug =
   | "web-language"
   | "react-framework"
@@ -97,9 +103,13 @@ export function getTopic(slug: string): Topic | undefined {
 }
 
 export function getTopicsForTags(tags: readonly string[]): Topic[] {
+  // some()을 사용하므로 한 글은 여러 주제에 동시에 속할 수 있다.
   const matched = TOPICS.filter((topic) =>
     tags.some((tag) => topic.tags.includes(tag)),
   );
+
+  // 새 태그를 조용히 누락하지 않고 기타에도 노출한다. 이미 알려진 태그가 함께
+  // 있으면 해당 주제들과 기타가 모두 반환된다.
   const hasUnknownTag = tags.some(
     (tag) => !TOPICS.some((topic) => topic.tags.includes(tag)),
   );

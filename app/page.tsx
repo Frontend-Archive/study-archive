@@ -13,6 +13,8 @@ import { ALL_TOPICS, getTopicsForTags, TOPICS } from "@/lib/topics";
 export const dynamic = "force-static";
 
 export default async function Home() {
+  // 서버 컴포넌트가 빌드 시 GitHub 원본을 검증·정규화한다. 아래에서 같은
+  // sessions를 통계 계산과 클라이언트 검색 양쪽에 전달하므로 별도 API가 없다.
   const sessions = await getArchiveSessions();
   const published = sessions
     .flatMap((session) => session.articles)
@@ -25,35 +27,39 @@ export default async function Home() {
         className="mx-auto max-w-[1280px] px-5 pt-8 pb-9 layout:px-8 layout:pt-10 layout:pb-10"
         id="top"
       >
-        <Eyebrow>Frontend study · Since 2026</Eyebrow>
-        <PageTitle variant="home" className="mt-4 mb-5 max-w-[1000px]">
-          Frontend <span className="text-accent not-italic">Archive</span>
-        </PageTitle>
-        <p className="m-0 max-w-[600px] break-keep text-[16px] leading-[1.7]">
-          네 명의 프론트엔드 개발자가 매달 공유한 발표와 글을
-          회차·멤버·주제별로 모았습니다.
-        </p>
-        <div
-          className="mt-7 flex max-w-[600px] flex-wrap gap-x-10 gap-y-3 layout:mt-8"
-          aria-label="아카이브 현황"
-        >
-          {[
-            [String(sessions.length).padStart(2, "0"), "Sessions"],
-            [String(published.length).padStart(2, "0"), "Articles"],
-            [String(MEMBERS.length).padStart(2, "0"), "Members"],
-          ].map(([value, label]) => (
-            <div
-              className="block layout:flex layout:items-baseline layout:gap-[14px]"
-              key={label}
-            >
-              <strong className="font-numeral text-[clamp(28px,3vw,44px)] leading-none font-medium">
-                {value}
-              </strong>
-              <span className="mt-1 block text-[11px] tracking-[0.08em] text-muted uppercase layout:mt-0">
-                {label}
-              </span>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 gap-7 layout:grid-cols-[minmax(0,1fr)_auto] layout:items-end layout:gap-10">
+          <div>
+            <Eyebrow>Frontend study · Since 2026</Eyebrow>
+            <PageTitle variant="home" className="mt-4 mb-5 max-w-[1000px]">
+              Frontend <span className="text-accent not-italic">Archive</span>
+            </PageTitle>
+            <p className="m-0 max-w-[600px] break-keep text-[16px] leading-[1.7]">
+              네 명의 프론트엔드 개발자가 매달 공유한 발표와 글을
+              회차·멤버·주제별로 모았습니다.
+            </p>
+          </div>
+          <div
+            className="flex max-w-[600px] flex-wrap gap-x-10 gap-y-3 layout:flex-col layout:flex-nowrap layout:items-end layout:gap-y-4"
+            aria-label="아카이브 현황"
+          >
+            {[
+              [String(sessions.length).padStart(2, "0"), "Sessions"],
+              [String(published.length).padStart(2, "0"), "Articles"],
+              [String(MEMBERS.length).padStart(2, "0"), "Members"],
+            ].map(([value, label]) => (
+              <div
+                className="block layout:flex layout:items-baseline layout:gap-[14px]"
+                key={label}
+              >
+                <strong className="font-numeral text-[clamp(28px,3vw,44px)] leading-none font-medium">
+                  {value}
+                </strong>
+                <span className="mt-1 block text-[11px] tracking-[0.08em] text-muted uppercase layout:mt-0">
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

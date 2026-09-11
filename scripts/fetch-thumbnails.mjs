@@ -11,6 +11,10 @@
  * 마크다운에 적용되는 규칙이고 여기에는 해당하지 않는다.
  *
  * 이미 받아 둔 파일은 다시 받지 않는다. 새 글이 추가될 때만 네트워크를 쓴다.
+ *
+ * 실행 흐름:
+ * Markdown의 글 URL 수집 -> 원문 HTML의 og:image 탐색 -> 이미지 형식·크기 검증
+ * -> public 파일 저장 -> 글 URL과 파일명을 연결하는 manifest 생성
  */
 import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
@@ -77,6 +81,8 @@ async function listArticleUrls() {
   const files = (await listing.json()).filter(
     (entry) => entry.type === "file" && /^\d{6}\.md$/.test(entry.name),
   );
+  // 이 스크립트는 Next/TypeScript 모듈을 불러오기 전 실행되는 독립 prebuild다.
+  // 필요한 URL만 직접 읽고 Set으로 중복 요청을 제거한다.
   const urls = new Set();
   for (const file of files) {
     const source = await (await fetch(file.download_url)).text();

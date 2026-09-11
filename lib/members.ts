@@ -11,6 +11,12 @@ import {
   type TopicSlug,
 } from "./topics";
 
+/**
+ * 최신순 원본 세션을 멤버 관점의 오래된순 학습 기록으로 재구성한다.
+ * 원본 데이터에는 손대지 않고 게시 수, 활동 기간, 최근 관심사를 모두 파생해
+ * 별도의 저장 데이터나 동기화 지점을 만들지 않는다.
+ */
+
 export type MemberRecord = {
   session: ArchiveSession;
   article: Article;
@@ -49,6 +55,9 @@ export function getMemberArchiveSummary(
     ): record is MemberRecord & { article: PublishedArticle } =>
       record.article.status === "published",
   );
+
+  // 주제별 마지막 등장 날짜만 기억하면 멤버의 관심사를 최근 등장 순으로
+  // 정렬할 수 있다. 같은 글의 중복 태그/주제는 Set으로 한 번만 반영한다.
   const topicDates = new Map<TopicSlug, string>();
 
   for (const { article, session } of publishedRecords) {
