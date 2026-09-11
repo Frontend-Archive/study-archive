@@ -6,7 +6,7 @@ import {
   ArchivePager,
   DetailSectionLabel,
   Eyebrow,
-  PageTitle,
+  PageHero,
   RoundBadge,
 } from "@/components/EditorialPrimitives";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -81,75 +81,49 @@ export default async function MemberPage({
   return (
     <main>
       <SiteHeader />
-      <article className="mx-auto max-w-[1280px] px-5 pt-[52px] pb-20 layout:px-8 layout:pt-[68px] layout:pb-[120px]">
-        <Link
-          className="mb-12 inline-block border-b border-current pb-1 text-[12px]"
-          href="/#members"
-        >
-          ← 모든 멤버
-        </Link>
-
-        <header className="block border-b border-ink py-6 pb-[52px] layout:grid layout:grid-cols-[160px_minmax(0,1fr)] layout:gap-[5vw] layout:py-8 layout:pb-16 wide:grid-cols-[minmax(190px,0.55fr)_minmax(0,1.45fr)]">
-          <div className="flex flex-row items-start justify-between layout:flex-col">
-            <Eyebrow>Member trajectory</Eyebrow>
-            <span
-              className="font-numeral text-[56px] leading-[0.85] font-medium tracking-[-0.055em] text-accent layout:text-[clamp(60px,7vw,80px)]"
-              aria-hidden="true"
-            >
-              {String(memberIndex + 1).padStart(2, "0")}
-            </span>
-          </div>
-          <div>
-            <PageTitle className="mt-7 mb-7 max-w-[900px] layout:mt-0">
+      <article className="mx-auto max-w-[1280px] px-5 pt-7 pb-20 layout:px-8 layout:pt-8 layout:pb-[120px]">
+        <PageHero
+          eyebrow="Member trajectory"
+          back={{ href: "/#members", label: "← 모든 멤버" }}
+          index={String(memberIndex + 1).padStart(2, "0")}
+          title={
+            <>
               <span className="text-accent not-italic">{member.name}</span>의 기록
-            </PageTitle>
-            <p className="ml-0 max-w-[480px] break-keep leading-[1.75] text-muted layout:ml-auto">
-              {memberDescription}
-            </p>
-          </div>
-        </header>
+            </>
+          }
+          description={memberDescription}
+        />
 
         <section
-          className="grid grid-cols-1 border-b border-ink layout:grid-cols-3"
+          className="flex flex-wrap items-baseline gap-x-6 gap-y-2 border-b border-ink py-3 text-[12px] layout:py-[14px]"
           aria-label="멤버 활동 요약"
         >
-          <div className="grid min-w-0 grid-cols-[1fr_auto] items-end border-b border-line py-[22px] layout:block layout:border-r layout:border-b-0 layout:pt-[30px] layout:pr-7 layout:pb-[34px] layout:pl-0">
-            <span className="block font-label text-[9px] leading-none font-bold tracking-[0.12em] text-muted uppercase">
-              Published records
-            </span>
-            <strong className="col-start-2 row-[1/3] m-0 block font-numeral text-[44px] leading-[0.9] font-medium tracking-[-0.04em] layout:mt-[22px] layout:text-[clamp(42px,5vw,68px)]">
+          <span className="flex items-baseline gap-2">
+            <span className="text-muted">게시 기록</span>
+            <strong className="font-numeral text-[15px] font-medium">
               {String(summary.publishedCount).padStart(2, "0")}
             </strong>
-            <p className="mt-2 text-[12px] text-muted layout:mt-[13px]">게시 기록</p>
-          </div>
-          <div className="grid min-w-0 grid-cols-[1fr_auto] items-end border-b border-line py-[22px] layout:block layout:border-r layout:border-b-0 layout:px-7 layout:pt-[30px] layout:pb-[34px]">
-            <span className="block font-label text-[9px] leading-none font-bold tracking-[0.12em] text-muted uppercase">
-              Latest interest
-            </span>
-            <strong className="col-start-2 row-[1/3] m-0 block max-w-[190px] break-keep text-right font-editorial text-[23px] leading-[1.12] font-medium tracking-[-0.055em] text-accent layout:mt-[22px] layout:max-w-none layout:text-left layout:text-[clamp(24px,2.8vw,39px)]">
-              {latestInterest}
-            </strong>
-            <p className="mt-2 text-[12px] text-muted layout:mt-[13px]">최근 관심사</p>
-          </div>
-          <div className="grid min-w-0 grid-cols-[1fr_auto] items-end py-[22px] layout:block layout:pt-[30px] layout:pr-0 layout:pb-[34px] layout:pl-7">
-            <span className="block font-label text-[9px] leading-none font-bold tracking-[0.12em] text-muted uppercase">
-              Active period
-            </span>
-            <strong className="col-start-2 row-[1/3] m-0 block font-numeral text-[28px] leading-[0.9] font-medium tracking-[-0.06em] text-accent layout:mt-[22px] layout:text-[clamp(26px,3.2vw,45px)]">
+          </span>
+          <span className="flex items-baseline gap-2">
+            <span className="text-muted">최근 관심사</span>
+            <strong className="font-medium text-accent">{latestInterest}</strong>
+          </span>
+          <span className="flex items-baseline gap-2">
+            <span className="text-muted">활동 기간</span>
+            <strong className="font-numeral text-[15px] font-medium text-accent">
               {activityPeriod}
             </strong>
-            <p className="mt-2 text-[12px] text-muted layout:mt-[13px]">활동 기간</p>
-          </div>
+          </span>
         </section>
 
         <section
-          className="grid grid-cols-1 gap-12 pt-[76px] pb-5 layout:grid-cols-[minmax(210px,0.7fr)_minmax(0,1.3fr)] layout:gap-[6vw] layout:pt-[100px] wide:grid-cols-[minmax(240px,0.75fr)_minmax(0,1.25fr)] wide:gap-[9vw]"
+          className="grid grid-cols-1 gap-12 pt-8 pb-5 layout:grid-cols-[minmax(210px,0.7fr)_minmax(0,1.3fr)] layout:gap-[6vw] layout:pt-10 wide:grid-cols-[minmax(240px,0.75fr)_minmax(0,1.25fr)] wide:gap-[9vw]"
           aria-labelledby="member-topics-title"
         >
           <div>
             <Eyebrow>Topic footprint</Eyebrow>
             <h2
-              className="mt-[13px] mb-6 max-w-[380px] break-keep font-editorial text-[40px] leading-[1.08] font-semibold tracking-[-0.055em] layout:text-[clamp(34px,4vw,54px)]"
+              className="mt-[13px] mb-6 max-w-[380px] break-keep font-editorial text-[26px] leading-[1.08] font-semibold tracking-[-0.055em] layout:text-[clamp(26px,2.6vw,36px)]"
               id="member-topics-title"
             >
               관심사가 남긴 흔적

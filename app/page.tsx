@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArchiveExplorer } from "@/components/ArchiveExplorer";
 import {
   Eyebrow,
+  HeroAction,
   PageTitle,
   SectionHeading,
 } from "@/components/EditorialPrimitives";
@@ -11,9 +12,6 @@ import { getArchiveSessions, MEMBERS } from "@/lib/archive";
 import { TOPICS } from "@/lib/topics";
 
 export const dynamic = "force-static";
-
-const heroActionClassName =
-  "inline-flex min-w-[170px] items-center justify-between gap-6 border border-ink px-[15px] py-[13px] text-[11px] tracking-[0.04em] transition-[background,color] duration-200 hover:bg-ink hover:text-paper motion-reduce:transition-none";
 
 export default async function Home() {
   const sessions = await getArchiveSessions();
@@ -25,36 +23,30 @@ export default async function Home() {
     <main>
       <SiteHeader />
       <section
-        className="mx-auto max-w-[1280px] px-5 pt-14 pb-12 layout:px-8 layout:pt-[84px] layout:pb-16"
+        className="mx-auto max-w-[1280px] px-5 pt-8 pb-9 layout:px-8 layout:pt-10 layout:pb-10"
         id="top"
       >
         <Eyebrow>Frontend study · Since 2026</Eyebrow>
-        <PageTitle
-          variant="home"
-          className="mt-[18px] mb-7 max-w-[1000px]"
-        >
+        <PageTitle variant="home" className="mt-4 mb-5 max-w-[1000px]">
           Frontend <span className="text-accent not-italic">Archive</span>
         </PageTitle>
-        <p className="m-0 max-w-[520px] break-keep text-[17px] leading-[1.75] layout:ml-auto">
+        <p className="m-0 max-w-[600px] break-keep text-[16px] leading-[1.7]">
           네 명의 프론트엔드 개발자가 매달 공유한 발표와 글을
           회차·멤버·주제별로 모았습니다.
         </p>
         <div
-          className="mt-7 flex max-w-[520px] flex-wrap gap-3 layout:ml-auto"
+          className="mt-6 flex max-w-[600px] flex-wrap gap-3"
           aria-label="빠른 탐색"
         >
-          <a
-            className={`${heroActionClassName} bg-ink text-paper`}
-            href="#archive"
-          >
+          <HeroAction href="#archive" variant="solid">
             최신 기록 보기 <span aria-hidden="true">↓</span>
-          </a>
-          <a className={heroActionClassName} href="/feed.xml">
+          </HeroAction>
+          <HeroAction href="/feed.xml">
             RSS 구독 <span aria-hidden="true">↗</span>
-          </a>
+          </HeroAction>
         </div>
         <div
-          className="mt-12 grid grid-cols-3 border-t border-ink pt-5 layout:mt-16"
+          className="mt-8 flex max-w-[600px] flex-wrap gap-x-10 gap-y-3 border-t border-ink pt-4 layout:mt-10"
           aria-label="아카이브 현황"
         >
           {[
@@ -66,10 +58,10 @@ export default async function Home() {
               className="block layout:flex layout:items-baseline layout:gap-[14px]"
               key={label}
             >
-              <strong className="font-numeral text-[clamp(36px,5vw,70px)] leading-none font-medium">
+              <strong className="font-numeral text-[clamp(28px,3vw,44px)] leading-none font-medium">
                 {value}
               </strong>
-              <span className="mt-2 block text-[11px] tracking-[0.08em] text-muted uppercase layout:mt-0">
+              <span className="mt-1 block text-[11px] tracking-[0.08em] text-muted uppercase layout:mt-0">
                 {label}
               </span>
             </div>

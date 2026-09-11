@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleRow } from "@/components/ArticleRow";
 import {
   ArchivePager,
   DetailSectionLabel,
-  Eyebrow,
-  PageTitle,
+  PageHero,
 } from "@/components/EditorialPrimitives";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -55,37 +53,23 @@ export default async function SessionPage({
   return (
     <main>
       <SiteHeader />
-      <article className="mx-auto max-w-[1280px] px-5 pt-[52px] pb-20 layout:px-8 layout:pt-[68px] layout:pb-[120px]">
-        <Link
-          className="mb-12 inline-block border-b border-current pb-1 text-[12px]"
-          href="/#archive"
-        >
-          ← 모든 회차
-        </Link>
-        <header className="grid min-h-0 grid-cols-1 items-end gap-[30px] border-b border-ink pb-9 layout:min-h-[220px] layout:grid-cols-2 layout:gap-0 wide:grid-cols-[1fr_2fr]">
-          <div>
-            <Eyebrow className="mt-[18px]" tone="muted">
-              Session archive
-            </Eyebrow>
-            <span
-              className="mt-5 block font-numeral text-[56px] leading-[0.85] font-medium tracking-[-0.055em] text-accent layout:text-[clamp(64px,8vw,88px)]"
-              aria-hidden="true"
-            >
-              {String(session.id).padStart(2, "0")}
-            </span>
-          </div>
-          <div>
-            <PageTitle className="m-0 max-w-[1000px]">
-              {session.title}
-            </PageTitle>
-            <p className="mt-[18px] text-muted">
-              {formatDate(session.date)} ·{" "}
-              {session.type === "on-line" ? "온라인" : "오프라인"}
-            </p>
-          </div>
-        </header>
+      <article className="mx-auto max-w-[1280px] px-5 pt-7 pb-20 layout:px-8 layout:pt-8 layout:pb-[120px]">
+        <PageHero
+          eyebrow="Session archive"
+          back={{ href: "/#archive", label: "← 모든 회차" }}
+          index={String(session.id).padStart(2, "0")}
+          title={session.title}
+          meta={
+            <>
+              <span>{formatDate(session.date)}</span>
+              <span>
+                {session.type === "on-line" ? "온라인" : "오프라인"}
+              </span>
+            </>
+          }
+        />
         <section
-          className="mt-[52px] layout:mt-[70px]"
+          className="mt-8 layout:mt-10"
           aria-labelledby="articles-title"
         >
           <DetailSectionLabel

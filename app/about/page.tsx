@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Eyebrow,
-  PageTitle,
-} from "@/components/EditorialPrimitives";
+import { PageHero } from "@/components/EditorialPrimitives";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -15,12 +12,16 @@ export default function AboutPage() {
   return (
     <main>
       <SiteHeader />
-      <article className="mx-auto max-w-[1280px] px-5 pt-[52px] pb-20 layout:px-8 layout:pt-[68px] layout:pb-[120px]">
-        <Eyebrow>About the archive</Eyebrow>
-        <PageTitle className="mt-[18px] mb-14 max-w-[1000px] layout:mb-[72px]">
-          <span className="text-accent not-italic">아카이브</span> 소개
-        </PageTitle>
-        <div className="grid grid-cols-1 gap-[52px] border-t border-ink pt-[34px] wide:grid-cols-2 wide:gap-[10vw]">
+      <article className="mx-auto max-w-[1280px] px-5 pt-7 pb-20 layout:px-8 layout:pt-8 layout:pb-[120px]">
+        <PageHero
+          eyebrow="About the archive"
+          title={
+            <>
+              <span className="text-accent not-italic">아카이브</span> 소개
+            </>
+          }
+        />
+        <div className="grid grid-cols-1 gap-[52px] pt-8 wide:grid-cols-2 wide:gap-[10vw]">
           <p className="m-0 break-keep font-editorial text-[23px] leading-[1.55] font-medium text-muted layout:text-[27px]">
             Frontend Archive는 네 명의 프론트엔드 개발자가 매달 각자의 질문을
             들고 모이는 스터디의 공개 기록입니다.

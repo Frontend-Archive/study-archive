@@ -4,8 +4,7 @@ import { notFound } from "next/navigation";
 import { ArticleRow } from "@/components/ArticleRow";
 import {
   DetailSectionLabel,
-  Eyebrow,
-  PageTitle,
+  PageHero,
   RoundBadge,
 } from "@/components/EditorialPrimitives";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -56,24 +55,22 @@ export default async function TopicPage({
   return (
     <main>
       <SiteHeader />
-      <article className="mx-auto max-w-[1280px] px-5 pt-[52px] pb-20 layout:px-8 layout:pt-[68px] layout:pb-[120px]">
-        <Link
-          className="mb-12 inline-block border-b border-current pb-1 text-[12px]"
-          href="/#archive"
-        >
-          ← 모든 기록
-        </Link>
-        <header className="border-b border-ink py-6 pb-[52px] layout:py-8 layout:pb-16">
-          <Eyebrow>Topic archive</Eyebrow>
-          <PageTitle className="mt-6 mb-7 max-w-[980px] layout:mt-[18px]">
-            <span className="text-accent not-italic">{topic.label}</span> 기록
-          </PageTitle>
-          <p className="ml-0 max-w-[500px] leading-[1.7] text-muted layout:ml-auto">
-            {topic.description}
-          </p>
-        </header>
+      <article className="mx-auto max-w-[1280px] px-5 pt-7 pb-20 layout:px-8 layout:pt-8 layout:pb-[120px]">
+        <PageHero
+          eyebrow="Topic archive"
+          back={{ href: "/#archive", label: "← 모든 기록" }}
+          title={
+            <>
+              <span className="text-accent not-italic">{topic.label}</span> 기록
+            </>
+          }
+          description={topic.description}
+          meta={
+            <span>{String(records.length).padStart(2, "0")}개의 기록</span>
+          }
+        />
         <section
-          className="mt-[52px] layout:mt-[70px]"
+          className="mt-8 layout:mt-10"
           aria-labelledby="topic-records-title"
         >
           <DetailSectionLabel

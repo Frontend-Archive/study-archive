@@ -38,8 +38,8 @@ export function PageTitle({
 }) {
   const size =
     variant === "home"
-      ? "text-[42px] layout:text-[clamp(46px,6vw,72px)]"
-      : "text-[clamp(36px,10vw,40px)] layout:text-[clamp(40px,5vw,64px)]";
+      ? "text-[38px] layout:text-[clamp(40px,4.4vw,58px)]"
+      : "text-[clamp(30px,8vw,34px)] layout:text-[clamp(32px,3.2vw,44px)]";
 
   return (
     <h1
@@ -51,6 +51,87 @@ export function PageTitle({
     >
       {children}
     </h1>
+  );
+}
+
+export function PageHero({
+  eyebrow,
+  title,
+  description,
+  meta,
+  back,
+  index,
+  variant = "page",
+}: {
+  eyebrow: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  meta?: ReactNode;
+  back?: { href: string; label: string };
+  index?: string;
+  variant?: "home" | "page";
+}) {
+  return (
+    <header className="border-b border-ink pb-7 layout:pb-8">
+      <div className="mb-6 flex items-center justify-between gap-4 layout:mb-7">
+        {back ? (
+          <Link
+            className="inline-block border-b border-current pb-1 text-[12px]"
+            href={back.href}
+          >
+            {back.label}
+          </Link>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-baseline gap-3">
+          <Eyebrow>{eyebrow}</Eyebrow>
+          {index && (
+            <span
+              className="font-numeral text-[15px] leading-none font-medium text-accent"
+              aria-hidden="true"
+            >
+              {index}
+            </span>
+          )}
+        </div>
+      </div>
+      <PageTitle variant={variant} className="max-w-[900px]">
+        {title}
+      </PageTitle>
+      {description && (
+        <p className="mt-3.5 max-w-[640px] break-keep text-[15px] leading-[1.6] text-muted layout:mt-4 layout:text-[16px]">
+          {description}
+        </p>
+      )}
+      {meta && (
+        <div className="mt-3.5 flex flex-wrap gap-x-5 gap-y-1 text-[12px] text-muted layout:mt-4">
+          {meta}
+        </div>
+      )}
+    </header>
+  );
+}
+
+export function HeroAction({
+  href,
+  children,
+  variant = "outline",
+}: {
+  href: string;
+  children: ReactNode;
+  variant?: "solid" | "outline";
+}) {
+  return (
+    <a
+      className={joinClasses(
+        "inline-flex min-w-[148px] flex-1 items-center justify-between gap-6 border border-ink px-[15px] py-[13px] text-[11px] tracking-[0.04em] transition-[background,color] duration-200 hover:bg-ink hover:text-paper motion-reduce:transition-none layout:flex-none layout:min-w-[170px]",
+        variant === "solid" ? "bg-ink text-paper" : undefined,
+      )}
+      href={href}
+    >
+      {children}
+    </a>
   );
 }
 
@@ -77,7 +158,7 @@ export function SectionHeading({
     >
       <div>
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h2 className="mt-3 font-editorial text-[clamp(42px,6vw,78px)] leading-none font-semibold tracking-[-0.055em]">
+        <h2 className="mt-3 font-editorial text-[clamp(30px,4vw,50px)] leading-none font-semibold tracking-[-0.055em]">
           {title}
         </h2>
       </div>
