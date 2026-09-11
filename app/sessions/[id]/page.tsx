@@ -6,7 +6,107 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { formatDate, getArchiveSessions } from "@/lib/archive";
 
-export async function generateStaticParams() { return (await getArchiveSessions()).map((session) => ({ id: String(session.id) })); }
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> { const { id } = await params; const session = (await getArchiveSessions()).find((item) => item.id === Number(id)); if (!session) return {}; const description = `${formatDate(session.date)}에 진행한 프론트엔드 스터디 ${session.id}회차 발표 기록`; return { title: `${session.title} — Frontend Archive`, description, openGraph: { title: `${session.title} — Frontend Archive`, description, images: [] }, twitter: { card: "summary", title: `${session.title} — Frontend Archive`, description, images: [] } }; }
-export default async function SessionPage({ params }: { params: Promise<{ id: string }> }) { const { id } = await params; const sessions = await getArchiveSessions(); const session = sessions.find((item) => item.id === Number(id)); if (!session) notFound(); const previous = sessions.find((item) => item.id === session.id - 1); const next = sessions.find((item) => item.id === session.id + 1); return <main><SiteHeader /><article className="detail-page"><Link className="back-link" href="/#archive">← 모든 회차</Link><header className="detail-hero"><div><p className="eyebrow">Session archive</p><span className="giant-number">{String(session.id).padStart(2, "0")}</span></div><div><h1>{session.title}</h1><p>{formatDate(session.date)} · {session.type === "on-line" ? "온라인" : "오프라인"}</p></div></header><section className="detail-list" aria-labelledby="articles-title"><div className="detail-section-label"><span id="articles-title">ARTICLES</span><span>{session.articles.filter((article) => article.status === "published").length} / {session.articles.length}</span></div>{session.articles.map((article) => <ArticleRow key={article.author} article={article} sessionId={session.id} date={session.date} />)}</section><nav className="pager" aria-label="회차 이동">{previous ? <Link href={`/sessions/${previous.id}`}><span>PREVIOUS</span><strong>← {previous.id}회차</strong></Link> : <span />}{next && <Link href={`/sessions/${next.id}`}><span>NEXT</span><strong>{next.id}회차 →</strong></Link>}</nav></article><SiteFooter /></main>; }
+export async function generateStaticParams() {
+  return (await getArchiveSessions()).map((session) => ({
+    id: String(session.id),
+  }));
+}
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const session = (await getArchiveSessions()).find(
+    (item) => item.id === Number(id),
+  );
+  if (!session) return {};
+
+  const description = `${formatDate(session.date)}에 진행한 프론트엔드 스터디 ${session.id}회차 발표 기록`;
+  const title = `${session.title} — Frontend Archive`;
+  return {
+    title,
+    description,
+    openGraph: { title, description, images: [] },
+    twitter: { card: "summary", title, description, images: [] },
+  };
+}
+
+export default async function SessionPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const sessions = await getArchiveSessions();
+  const session = sessions.find((item) => item.id === Number(id));
+  if (!session) notFound();
+
+  const previous = sessions.find((item) => item.id === session.id - 1);
+  const next = sessions.find((item) => item.id === session.id + 1);
+
+  return (
+    <main>
+      <SiteHeader />
+      <article className="detail-page">
+        <Link className="back-link" href="/#archive">
+          ← 모든 회차
+        </Link>
+        <header className="detail-hero">
+          <div>
+            <p className="eyebrow">Session archive</p>
+            <span className="giant-number" aria-hidden="true">
+              {String(session.id).padStart(2, "0")}
+            </span>
+          </div>
+          <div>
+            <h1 className="page-title">{session.title}</h1>
+            <p>
+              {formatDate(session.date)} ·{" "}
+              {session.type === "on-line" ? "온라인" : "오프라인"}
+            </p>
+          </div>
+        </header>
+        <section className="detail-list" aria-labelledby="articles-title">
+          <div className="detail-section-label">
+            <span id="articles-title">ARTICLES</span>
+            <span>
+              {
+                session.articles.filter(
+                  (article) => article.status === "published",
+                ).length
+              }{" "}
+              / {session.articles.length}
+            </span>
+          </div>
+          {session.articles.map((article) => (
+            <ArticleRow
+              key={article.author}
+              article={article}
+              sessionId={session.id}
+              date={session.date}
+            />
+          ))}
+        </section>
+        <nav className="pager" aria-label="회차 이동">
+          {previous ? (
+            <Link href={`/sessions/${previous.id}`}>
+              <span>PREVIOUS</span>
+              <strong>← {previous.id}회차</strong>
+            </Link>
+          ) : (
+            <span />
+          )}
+          {next && (
+            <Link href={`/sessions/${next.id}`}>
+              <span>NEXT</span>
+              <strong>{next.id}회차 →</strong>
+            </Link>
+          )}
+        </nav>
+      </article>
+      <SiteFooter />
+    </main>
+  );
+}

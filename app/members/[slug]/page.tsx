@@ -67,6 +67,9 @@ export default async function MemberPage({
   );
   const latestInterest =
     summary.latestTopics.map((topic) => topic.label).join(" · ") || "기록 전";
+  const memberDescription = summary.publishedCount
+    ? `전체 ${summary.records.length}회차 중 ${summary.publishedCount}개의 글을 게시했습니다. 활동 기간은 ${activityPeriod}입니다.`
+    : `전체 ${summary.records.length}회차 중 아직 게시된 글이 없습니다.`;
 
   return (
     <main>
@@ -84,17 +87,10 @@ export default async function MemberPage({
             </span>
           </div>
           <div className="member-hero-content">
-            <h1>
-              <em>{member.name}</em>의
-              <br />배움이 쌓인 시간
+            <h1 className="page-title">
+              <span className="title-accent">{member.name}</span>의 기록
             </h1>
-            <p>
-              {summary.records.length}번의 만남 중 {summary.publishedCount}개의
-              기록을 남겼습니다.{" "}
-              {activityPeriod === "기록 전"
-                ? "첫 번째 배움을 준비하고 있습니다."
-                : `${activityPeriod} 동안 이어진 관심사를 살펴보세요.`}
-            </p>
+            <p>{memberDescription}</p>
           </div>
         </header>
 

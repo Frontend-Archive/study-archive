@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 test("검색과 초기화가 URL과 결과를 갱신한다", async ({ page }) => {
   await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Frontend Archive", exact: true }),
+  ).toBeVisible();
   await page.locator('[data-hydrated="true"]').waitFor();
   const input = page.getByPlaceholder("어떤 배움을 찾고 있나요?");
   await input.fill("React Compiler");
@@ -20,7 +23,9 @@ test("회차와 멤버 상세로 이동할 수 있다", async ({ page }) => {
   ).toBeVisible();
   await page.goto("/#members");
   await page.locator('a.member-card[href="/members/kwon-sihyeon"]').click();
-  await expect(page.getByRole("heading", { name: /권시현/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "권시현의 기록", exact: true }),
+  ).toBeVisible();
   await expect(page.getByLabel("멤버 활동 요약")).toContainText("게시 기록");
   await expect(
     page.getByRole("heading", { name: "관심사가 남긴 흔적" }),
@@ -131,6 +136,12 @@ test("모바일에서 모든 메뉴를 사용할 수 있고 가로로 넘치지 
   }));
   expect(widths.content).toBeLessThanOrEqual(widths.viewport);
   await page.goto("/topics/react-framework");
+  await expect(
+    page.getByRole("heading", {
+      name: "React·프레임워크 기록",
+      exact: true,
+    }),
+  ).toBeVisible();
   const topicWidths = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,
     content: document.documentElement.scrollWidth,
@@ -142,6 +153,37 @@ test("모바일에서 모든 메뉴를 사용할 수 있고 가로로 넘치지 
     content: document.documentElement.scrollWidth,
   }));
   expect(memberWidths.content).toBeLessThanOrEqual(memberWidths.viewport);
+  await page.goto("/about");
+  await expect(
+    page.getByRole("heading", { name: "아카이브 소개", exact: true }),
+  ).toBeVisible();
+  const aboutWidths = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    content: document.documentElement.scrollWidth,
+  }));
+  expect(aboutWidths.content).toBeLessThanOrEqual(aboutWidths.viewport);
+  await page.goto("/sessions/6");
+  const sessionWidths = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    content: document.documentElement.scrollWidth,
+  }));
+  expect(sessionWidths.content).toBeLessThanOrEqual(sessionWidths.viewport);
+});
+
+test("태블릿에서 긴 상세 제목이 자연스럽게 배치된다", async ({ page }) => {
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await page.goto("/topics/architecture-patterns");
+  await expect(
+    page.getByRole("heading", {
+      name: "아키텍처·패턴 기록",
+      exact: true,
+    }),
+  ).toBeVisible();
+  const widths = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    content: document.documentElement.scrollWidth,
+  }));
+  expect(widths.content).toBeLessThanOrEqual(widths.viewport);
 });
 
 test("RSS는 게시된 글만 제공한다", async ({ request }) => {

@@ -46,7 +46,6 @@ export default async function TopicPage({
 
   const sessions = await getArchiveSessions();
   const records = getTopicRecords(sessions, topic.slug);
-  const [topicLead, ...topicRest] = topic.label.split("·");
 
   return (
     <main>
@@ -57,17 +56,8 @@ export default async function TopicPage({
         </Link>
         <header className="topic-hero">
           <p className="eyebrow">Topic archive</p>
-          <h1>
-            <em>
-              {topicLead}
-              {topicRest.length > 0 && (
-                <>
-                  ·<br className="topic-label-break" />
-                  {topicRest.join("·")}
-                </>
-              )}
-            </em>
-            <br />에서 발견한 배움
+          <h1 className="page-title">
+            <span className="title-accent">{topic.label}</span> 기록
           </h1>
           <p>{topic.description}</p>
         </header>
