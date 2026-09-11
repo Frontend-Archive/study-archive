@@ -22,7 +22,9 @@ test("회차와 멤버 상세로 이동할 수 있다", async ({ page }) => {
     page.getByRole("heading", { name: "스터디 6회차" }),
   ).toBeVisible();
   await page.goto("/#members");
-  await page.locator('a.member-card[href="/members/kwon-sihyeon"]').click();
+  await page
+    .getByRole("link", { name: /권시현.*개의 기록/ })
+    .click();
   await expect(
     page.getByRole("heading", { name: "권시현의 기록", exact: true }),
   ).toBeVisible();
@@ -39,9 +41,9 @@ test("멤버의 주제 흔적에서 작성자와 주제가 결합된 기록으�
   page,
 }) => {
   await page.goto("/members/kwon-sihyeon");
-  const topicLink = page.locator(
-    'a.member-topic-link[href*="topic=architecture-patterns"]',
-  );
+  const topicLink = page.getByRole("link", {
+    name: "아키텍처·패턴 관련 기록 보기",
+  });
   await expect(topicLink).toBeVisible();
   await topicLink.click();
   await page.locator('[data-hydrated="true"]').waitFor();
@@ -54,7 +56,7 @@ test("멤버의 주제 흔적에서 작성자와 주제가 결합된 기록으�
 
 test("멤버 학습 로그에서 회차와 원문으로 이동할 수 있다", async ({ page }) => {
   await page.goto("/members/kwon-sihyeon");
-  const firstRecord = page.locator(".member-record").first();
+  const firstRecord = page.getByTestId("member-record").first();
 
   await expect(
     firstRecord.getByRole("link", { name: "ROUND 01" }),
@@ -99,7 +101,9 @@ test("결과가 없을 때 조건을 보여주고 다시 제거할 수 있다", 
 test("글에서 원문, 작성자, 태그와 주제로 이동할 수 있다", async ({ page }) => {
   await page.goto("/?q=React+Compiler#archive");
   await page.locator('[data-hydrated="true"]').waitFor();
-  const row = page.locator(".article-row", { hasText: "React Compiler" });
+  const row = page
+    .getByTestId("article-row")
+    .filter({ hasText: "React Compiler" });
   const source = row.getByRole("link", { name: /새 탭에서 원문 열기/ });
   await expect(source).toHaveAttribute("target", "_blank");
   await expect(row.getByRole("link", { name: "염승준" })).toHaveAttribute(
@@ -184,6 +188,32 @@ test("태블릿에서 긴 상세 제목이 자연스럽게 배치된다", async 
     content: document.documentElement.scrollWidth,
   }));
   expect(widths.content).toBeLessThanOrEqual(widths.viewport);
+});
+
+test("포커스, 호버와 reduced motion 환경을 보존한다", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+
+  const archiveLink = page.getByRole("link", {
+    name: "Archive",
+    exact: true,
+  });
+  await archiveLink.focus();
+  await expect(archiveLink).toHaveCSS("outline-style", "solid");
+  await expect(archiveLink).toHaveCSS("outline-width", "2px");
+  await expect(archiveLink).toHaveCSS("outline-color", "rgb(35, 71, 255)");
+
+  const memberCard = page.getByRole("link", { name: /권시현.*개의 기록/ });
+  await expect(memberCard).toHaveCSS("transition-property", "none");
+
+  const supportsHover = await page.evaluate(() =>
+    window.matchMedia("(hover: hover)").matches,
+  );
+  if (supportsHover) {
+    await memberCard.hover();
+    await expect(memberCard).toHaveCSS("background-color", "rgb(35, 71, 255)");
+    await expect(memberCard).toHaveCSS("color", "rgb(255, 255, 255)");
+  }
 });
 
 test("RSS는 게시된 글만 제공한다", async ({ request }) => {

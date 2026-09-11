@@ -12,6 +12,10 @@ TypeScript 타입만 신뢰하지 않고 Zod와 도메인 검사를 함께 적�
 
 아카이브 저장소가 웹 저장소에 `archive-updated` dispatch를 보내고, 웹 저장소가 호스팅 deploy hook을 호출한다. 장애 시 GitHub Actions 로그에서 실패 단계를 확인하고, 원본을 수정한 뒤 수동 dispatch로 복구한다.
 
+## ADR-004: Tailwind 유틸리티를 스타일 경계로 사용
+
+색상·폰트·반응형 경계는 Tailwind 4의 `@theme` 토큰으로 관리하고, 화면 스타일은 사용하는 JSX에 유틸리티 클래스로 둔다. 반복되는 표현은 작은 React 컴포넌트와 고정 variant로 공유한다. 전역 CSS에는 Tailwind import, 디자인 토큰, 문서 전체의 포커스 기준만 두며 페이지 선택자, `@apply`, 동적으로 조합한 Tailwind 클래스는 사용하지 않는다.
+
 ## 바이브코딩 작업 계약
 
 - 한 번에 하나의 사용자 결과와 인수 조건만 구현한다.
@@ -22,4 +26,3 @@ TypeScript 타입만 신뢰하지 않고 Zod와 도메인 검사를 함께 적�
 ## Definition of Done
 
 요구사항 추적 가능, 접근 가능한 상호작용, 실패 상태 처리, 자동 검사 통과, 모바일·데스크톱 확인, 운영 문서 반영을 모두 만족한다.
-

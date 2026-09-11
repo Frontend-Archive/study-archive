@@ -13,4 +13,10 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title, description, images: ["/og.png"] },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="ko"><body>{children}</body></html>; }
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="ko" className="scroll-smooth motion-reduce:scroll-auto">
+      <body className="bg-paper font-sans text-ink">{children}</body>
+    </html>
+  );
+}

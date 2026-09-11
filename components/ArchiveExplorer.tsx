@@ -99,11 +99,21 @@ export function ArchiveExplorer({
   }, [active, count]);
   return (
     <>
-      <div className="filter-panel" role="search" ref={panelRef}>
-        <label className="search-field">
+      <div
+        className="grid grid-cols-1 gap-3 border-b border-dark-line pt-6 pb-7 layout:grid-cols-2 layout:pt-7 wide:grid-cols-[minmax(280px,1fr)_180px_180px_auto]"
+        role="search"
+        ref={panelRef}
+      >
+        <label className="relative flex items-center border-b border-dark-control layout:col-[1/-1] wide:col-auto">
           <span className="sr-only">제목 또는 태그 검색</span>
-          <i aria-hidden="true">⌕</i>
+          <i
+            className="font-numeral text-[28px] leading-none font-normal text-accent-soft not-italic"
+            aria-hidden="true"
+          >
+            ⌕
+          </i>
           <input
+            className="w-full rounded-none border-0 bg-transparent py-[10px] pr-1 pl-3 text-paper"
             type="search"
             autoComplete="off"
             value={query}
@@ -111,9 +121,12 @@ export function ArchiveExplorer({
             placeholder="어떤 배움을 찾고 있나요?"
           />
         </label>
-        <label>
-          <span>WRITER</span>
+        <label className="flex flex-col gap-[7px]">
+          <span className="font-label text-[9px] leading-none font-bold tracking-[0.12em] text-dark-label">
+            WRITER
+          </span>
           <select
+            className="w-full cursor-pointer rounded-none border-0 border-b border-dark-control bg-transparent px-1 py-[10px] text-paper [&>option]:bg-paper [&>option]:text-ink"
             value={author}
             onChange={(event) => update("author", event.target.value)}
           >
@@ -123,9 +136,12 @@ export function ArchiveExplorer({
             ))}
           </select>
         </label>
-        <label>
-          <span>TOPIC</span>
+        <label className="flex flex-col gap-[7px]">
+          <span className="font-label text-[9px] leading-none font-bold tracking-[0.12em] text-dark-label">
+            TOPIC
+          </span>
           <select
+            className="w-full cursor-pointer rounded-none border-0 border-b border-dark-control bg-transparent px-1 py-[10px] text-paper [&>option]:bg-paper [&>option]:text-ink"
             value={topic}
             onChange={(event) => update("topic", event.target.value)}
           >
@@ -137,16 +153,24 @@ export function ArchiveExplorer({
             ))}
           </select>
         </label>
-        <button type="button" onClick={reset} disabled={!active}>
+        <button
+          className="min-h-10 cursor-pointer self-end justify-self-stretch border border-dark-control bg-transparent px-[17px] text-paper disabled:cursor-not-allowed disabled:opacity-35 layout:justify-self-end wide:justify-self-stretch"
+          type="button"
+          onClick={reset}
+          disabled={!active}
+        >
           초기화
         </button>
       </div>
       {activeFilters.length > 0 && (
-        <div className="filter-chips" aria-label="적용 중인 검색 조건">
+        <div
+          className="flex flex-wrap gap-2 pt-4 layout:pt-[18px]"
+          aria-label="적용 중인 검색 조건"
+        >
           {activeFilters.map((item) => (
             <button
               type="button"
-              className="filter-chip"
+              className="inline-flex min-h-[34px] cursor-pointer items-center gap-[10px] rounded-full border border-dark-control bg-transparent px-[11px] text-[11px] text-paper hover:border-accent-soft hover:text-accent-soft"
               key={item.key}
               onClick={() => update(item.key, "")}
               aria-label={`${item.label} 조건 제거`}
@@ -157,7 +181,7 @@ export function ArchiveExplorer({
           ))}
         </div>
       )}
-      <div className="result-summary">
+      <div className="flex justify-between pt-6 text-[12px] text-dark-muted">
         <span>
           {active
             ? `${count}개의 기록을 찾았습니다`
@@ -169,11 +193,14 @@ export function ArchiveExplorer({
         </span>
       </div>
       {filtered.length ? (
-        <div className="timeline">
+        <div>
           {filtered.map((session) => (
-            <article className="session" key={session.id}>
-              <div className="session-meta">
-                <span className="session-number">
+            <article
+              className="grid grid-cols-1 gap-7 border-b border-dark-line py-[46px] layout:grid-cols-[220px_1fr] layout:gap-0"
+              key={session.id}
+            >
+              <div className="grid grid-cols-[auto_1fr_auto] items-end gap-[10px] font-label text-[11px] leading-[1.2] tracking-[0.09em] text-dark-muted layout:flex layout:flex-col layout:items-start">
+                <span className="font-numeral text-[52px] leading-none italic text-paper layout:mb-[18px]">
                   {String(session.id).padStart(2, "0")}
                 </span>
                 <time dateTime={session.date}>
@@ -182,7 +209,7 @@ export function ArchiveExplorer({
                 <span>{session.type === "on-line" ? "ONLINE" : "OFFLINE"}</span>
                 <SessionLink id={session.id} />
               </div>
-              <div className="article-list">
+              <div>
                 {session.articles.map((article) => (
                   <ArticleRow
                     key={article.author}
@@ -196,11 +223,22 @@ export function ArchiveExplorer({
           ))}
         </div>
       ) : (
-        <div className="empty-state">
-          <span>∅</span>
-          <h3>아직 만나는 기록이 없어요.</h3>
-          <p>위 조건을 하나씩 지우거나 모든 기록으로 돌아가 보세요.</p>
-          <button onClick={reset}>모든 기록 보기</button>
+        <div className="border-b border-dark-line px-5 py-[100px] text-center">
+          <span className="font-numeral text-[56px] leading-none italic text-accent-soft">
+            ∅
+          </span>
+          <h3 className="mt-[22px] mb-[10px] font-editorial text-[26px] leading-[1.3] font-medium">
+            아직 만나는 기록이 없어요.
+          </h3>
+          <p className="text-dark-muted">
+            위 조건을 하나씩 지우거나 모든 기록으로 돌아가 보세요.
+          </p>
+          <button
+            className="mt-5 min-h-10 cursor-pointer self-end border border-dark-control bg-transparent px-[17px] text-paper"
+            onClick={reset}
+          >
+            모든 기록 보기
+          </button>
         </div>
       )}
     </>
