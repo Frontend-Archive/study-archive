@@ -39,6 +39,12 @@ node --test tests/rendered-html.test.mjs
 2. 각 파일의 YAML frontmatter를 Zod strict 스키마로 파싱한 뒤, 스키마로 표현할 수 없는 도메인 규칙을 별도로 검사한다. 파일명과 `date` 일치, `title === "스터디 {id}회차"`, 발표자 4명의 고정 순서, 회차 ID 중복 여부다.
 3. `getArchiveSessions()`는 모듈 레벨 Promise 하나를 캐시해 빌드 중 중복 요청을 막는다.
 
+### 썸네일은 별도의 빌드 단계다
+
+`scripts/fetch-thumbnails.mjs`가 `prebuild`로 실행되어 각 글 원문의 `og:image`를 내려받아 `public/thumbnails/`에 저장하고, `lib/thumbnails.json`에 원문 URL과 파일명을 매핑한다. 외부 주소를 그대로 쓰지 않는 이유는 티스토리가 만료 시각과 서명이 붙은 CDN 주소를 주기 때문이다.
+
+이 단계는 실패해도 빌드를 멈추지 않는다. 아래의 빌드 실패 규칙은 아카이브 마크다운에만 적용되며, 썸네일은 보조 정보라 없으면 주소에서 뽑은 기하 도형(`components/ThumbnailMark.tsx`)으로 대체된다. 이미 받아 둔 파일과 이미지가 없다고 확인된 URL은 `scripts/thumbnail-cache.json`에 기록되어 다시 요청하지 않는다. 두 파일과 내려받은 이미지는 모두 커밋한다.
+
 원본이 규칙을 어기면 화면에서 조용히 빼지 않고 빌드를 실패시킨다(`docs/02-content-domain.md`, ADR-002). 이 동작을 완화하는 방향으로 바꾸지 않는다.
 
 ### 외부 타입과 도메인 타입의 분리

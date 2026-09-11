@@ -115,9 +115,9 @@ export function SectionHeading({
   action,
   tone,
 }: {
-  eyebrow: ReactNode;
+  eyebrow?: ReactNode;
   title: ReactNode;
-  description: ReactNode;
+  description?: ReactNode;
   action?: ReactNode;
   tone: "dark" | "light";
 }) {
@@ -132,20 +132,27 @@ export function SectionHeading({
       )}
     >
       <div>
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h2 className="mt-3 font-editorial text-[clamp(30px,4vw,50px)] leading-none font-semibold tracking-[-0.055em]">
+        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+        <h2
+          className={joinClasses(
+            "font-editorial text-[clamp(30px,4vw,50px)] leading-none font-semibold tracking-[-0.055em]",
+            eyebrow ? "mt-3" : undefined,
+          )}
+        >
           {title}
         </h2>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-3">
-        <p
-          className={joinClasses(
-            "hidden text-sm leading-[1.6] layout:block",
-            copy,
-          )}
-        >
-          {description}
-        </p>
+        {description && (
+          <p
+            className={joinClasses(
+              "hidden text-sm leading-[1.6] layout:block",
+              copy,
+            )}
+          >
+            {description}
+          </p>
+        )}
         {action}
       </div>
     </div>

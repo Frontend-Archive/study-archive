@@ -95,7 +95,7 @@ test("결과가 없을 때 조건을 보여주고 다시 제거할 수 있다", 
   });
   await expect(chip).toBeVisible();
   await chip.click();
-  await expect(page.getByText("최근 기록부터 천천히 거슬러 올라가 보세요.")).toBeVisible();
+  await expect(page.getByTestId("article-row").first()).toBeVisible();
 });
 
 test("글에서 원문, 작성자, 태그로 이동할 수 있다", async ({ page }) => {

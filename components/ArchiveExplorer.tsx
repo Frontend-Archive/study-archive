@@ -100,7 +100,7 @@ export function ArchiveExplorer({
   return (
     <>
       <div
-        className="grid grid-cols-1 gap-3 border-b border-dark-line pt-6 pb-7 layout:grid-cols-2 layout:pt-7 wide:grid-cols-[minmax(280px,1fr)_180px_180px_auto]"
+        className="grid grid-cols-1 gap-3 pt-6 pb-7 layout:grid-cols-2 layout:pt-7 wide:grid-cols-[minmax(280px,1fr)_180px_180px_auto]"
         role="search"
         ref={panelRef}
       >
@@ -182,12 +182,10 @@ export function ArchiveExplorer({
         </div>
       )}
       <div className="flex justify-between pt-6 text-[12px] text-dark-muted">
-        <span>
-          {active
-            ? `${count}개의 기록을 찾았습니다`
-            : "최근 기록부터 천천히 거슬러 올라가 보세요."}
+        {active && <span>{count}개의 기록을 찾았습니다</span>}
+        <span className="ml-auto">
+          {String(filtered.length).padStart(2, "0")} SESSIONS
         </span>
-        <span>{String(filtered.length).padStart(2, "0")} SESSIONS</span>
         <span className="sr-only" role="status" aria-live="polite">
           {announcement}
         </span>

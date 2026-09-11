@@ -62,15 +62,7 @@ export default async function Home() {
         id="archive"
       >
         <SectionHeading
-          eyebrow="The ongoing record"
           title="회차별 아카이브"
-          description={
-            <>
-              제목과 태그, 사람을 따라
-              <br />
-              우리의 배움을 발견하세요.
-            </>
-          }
           action={
             <a
               className="inline-flex shrink-0 items-center gap-2 border-b border-dark-control pb-1 text-[11px] tracking-[0.04em] text-paper hover:border-accent-soft hover:text-accent-soft"
