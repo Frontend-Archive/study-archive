@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ArchiveSession } from "@/lib/archive";
 import { formatDate, parseArchiveMarkdown } from "@/lib/archive";
 import { getMemberArchiveSummary } from "@/lib/members";
@@ -214,5 +214,29 @@ describe("멤버 아카이브 요약", () => {
       latestTopics: [],
       topics: [],
     });
+  });
+});
+
+describe("사이트 절대 URL 기준값", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  async function loadSiteUrl(value?: string) {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", value as string);
+    vi.resetModules();
+    return (await import("@/lib/site")).SITE_URL;
+  }
+
+  it("빈 값으로 정의된 환경 변수는 기본값으로 되돌린다", async () => {
+    // 이 조건에서 `new URL("")`이 Vercel 빌드를 멈춘 적이 있다.
+    expect(await loadSiteUrl("")).toMatch(/^https:\/\/[^/]+$/);
+    expect(await loadSiteUrl("   ")).toMatch(/^https:\/\/[^/]+$/);
+  });
+
+  it("끝의 슬래시를 떼어 낸다", async () => {
+    expect(await loadSiteUrl("https://example.test/")).toBe("https://example.test");
+    expect(await loadSiteUrl("https://example.test///")).toBe("https://example.test");
   });
 });
