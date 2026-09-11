@@ -119,9 +119,20 @@ TypeScript strict mode를 사용하는 App Router 구조와 Tailwind CSS 기반 
 
 ### 8단계: CI, 배포, 콘텐츠 갱신 경로 준비
 
-모든 push와 pull request에서 lint, typecheck, 단위 테스트, 프로덕션 빌드를 검사하는 GitHub Actions를 추가했다. 콘텐츠 저장소의 `archive-updated` 이벤트를 받은 웹 저장소가 Vercel Deploy Hook을 호출하는 워크플로도 마련했다.
+모든 push와 pull request에서 lint, typecheck, 단위 테스트, 프로덕션 빌드를 검사하는 GitHub Actions를 추가했다. 콘텐츠 저장소의 `archive-updated` 이벤트를 받은 웹 저장소가 호스팅 deploy hook을 호출하는 워크플로도 마련했다.
 
-사이트는 Sites를 통해 공개 배포했으며 현재 URL에서 접근할 수 있다. GitHub에서 Vercel로 이어지는 자동 재배포는 코드 구성이 완료된 상태이며, 실제 운영 연결을 위해서는 웹 저장소를 GitHub에 생성·push하고 `VERCEL_DEPLOY_HOOK_URL`과 원본 저장소의 dispatch 대상·토큰을 설정해야 한다.
+사이트는 Sites를 통해 처음 공개 배포했다. 자동 재배포는 코드 구성이 완료된 상태이고, 실제 운영 연결을 위해서는 `DEPLOY_HOOK_URL`과 원본 저장소의 dispatch 대상·토큰을 설정해야 한다.
+
+### 9단계: Vercel 배포로 이전 (2026-09-12)
+
+운영 배포를 Vercel로 옮기면서 런타임을 표준 Next.js로 되돌렸다. `vinext`는 Next.js API를 Vite 위에 다시 구현한 Cloudflare용 프레임워크라 산출물이 Worker 번들이었고, Vercel이 그대로 받을 수 없었다. 플랫폼과 프레임워크를 일치시키는 쪽을 택해 `next`를 설치하고 `vinext`, `@vitejs/plugin-rsc`, `@cloudflare/vite-plugin`, `@openai/sites-vite-plugin`, `wrangler`를 제거했다.
+
+- `vite.config.ts`, `worker/index.ts`, `.openai/hosting.json`, 사용되지 않던 `app/chatgpt-auth.ts`를 삭제했다.
+- 스크립트를 `next dev`·`next build`·`next start`로 바꿨다.
+- `app/feed.xml/route.ts`에 `force-static`을 명시했다. Next.js의 라우트 핸들러 기본값은 요청마다 실행이라, 선언하지 않으면 이 라우트만 동적으로 남는다.
+- `test:render`가 Worker 번들을 직접 import 하던 방식을 `next start`로 띄운 프로덕션 서버에 HTTP 요청하는 방식으로 바꿨다. 검증 항목 11개는 그대로다.
+
+`app/` 소스는 App Router 규약을 그대로 쓰고 있었으므로 페이지 코드 변경은 없었다. 필터를 `history.pushState`로 URL에 반영하는 `ArchiveExplorer`의 동작도 실제 Next.js 라우터에서 그대로 확인했다.
 
 ## 4. 사용한 Codex 스킬과 영향
 
@@ -145,7 +156,7 @@ TypeScript strict mode를 사용하는 App Router 구조와 Tailwind CSS 기반 
 | 공유 자산 | `public/og.png` | Open Graph 이미지 |
 | 자동 테스트 | `tests/` | 도메인, 렌더링, 핵심 사용자 흐름 검증 |
 | CI·재배포 | `.github/workflows/` | 품질 검사와 콘텐츠 변경 후 배포 호출 |
-| 배포 설정 | `.openai/hosting.json`, `worker/` | Sites 프로젝트와 런타임 진입점 |
+| 배포 설정 | `next.config.ts`, `.github/workflows/redeploy.yml` | Vercel 빌드 설정과 재배포 호출 |
 | 시각 증거 | `artifacts/` | 데스크톱·모바일 최종 화면 캡처 |
 
 ## 6. 커밋 구성 원칙
@@ -164,9 +175,9 @@ TypeScript strict mode를 사용하는 App Router 구조와 Tailwind CSS 기반 
 
 MVP 기능, 테스트, 시각 QA, 공개 배포는 완료되었다. 운영자가 이어서 해야 하는 외부 설정은 다음과 같다.
 
-1. 이 웹 프로젝트를 GitHub 저장소에 push한다.
-2. Vercel 프로젝트와 저장소를 연결하고 `NEXT_PUBLIC_SITE_URL`을 실제 운영 도메인으로 설정한다.
-3. 웹 저장소 Secret에 `VERCEL_DEPLOY_HOOK_URL`을 등록한다.
+1. Vercel에 이 저장소를 연결한다. 프레임워크 프리셋은 Next.js이고 빌드 설정은 기본값 그대로다.
+2. Vercel 프로젝트 환경 변수에 `NEXT_PUBLIC_SITE_URL`을 실제 운영 도메인으로 설정한다. 코드에 남은 기본값은 이전 호스팅 주소라 이 설정이 없으면 메타데이터와 사이트맵이 잘못된 도메인을 가리킨다.
+3. 웹 저장소 Secret에 Vercel deploy hook URL을 `DEPLOY_HOOK_URL`로 등록하고, 재배포가 Vercel로 나가는지 수동 `workflow_dispatch`로 한 번 확인한다.
 4. `Frontend-Archive/archive`의 `notify-blog.yml`이 새 웹 저장소로 `archive-updated`를 보내도록 대상과 `BLOG_DISPATCH_TOKEN`을 설정한다.
 5. 테스트 Markdown 변경으로 5분 이내 재배포 시작 여부를 확인한다.
 

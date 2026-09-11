@@ -1,5 +1,9 @@
 import { getArchiveSessions } from "@/lib/archive";
 
+// 다른 페이지와 같이 빌드 시점에 한 번만 만든다. 이 선언이 없으면
+// 라우트 핸들러는 요청마다 실행된다.
+export const dynamic = "force-static";
+
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
   "https://frontend-archive-study.sunny-grass-6556.chatgpt.site";

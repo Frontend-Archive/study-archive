@@ -18,9 +18,12 @@ npm run test:e2e
 
 ## 배포
 
-1. Vercel 프로젝트에서 이 저장소를 연결하고 `NEXT_PUBLIC_SITE_URL`을 실제 도메인으로 설정합니다.
-2. Vercel Deploy Hook을 만든 뒤 웹 저장소의 `VERCEL_DEPLOY_HOOK_URL` GitHub Secret에 저장합니다.
-3. 아카이브 저장소의 dispatch 대상 저장소를 이 웹 저장소로 지정하고 `BLOG_DISPATCH_TOKEN`을 설정합니다.
-4. `archives/**` 변경이 `archive-updated`를 보내면 `redeploy.yml`이 새 배포를 시작합니다.
+운영 배포 대상은 Vercel 프로젝트입니다. `npm run build`는 Next.js 표준 빌드라 별도 어댑터나 빌드 설정 없이 Vercel이 저장소를 그대로 빌드합니다.
+
+1. Vercel에 이 저장소를 연결합니다. 프레임워크 프리셋은 Next.js입니다.
+2. Vercel 프로젝트 환경 변수에 `NEXT_PUBLIC_SITE_URL`을 실제 운영 도메인으로 설정합니다. 빌드 시점에 메타데이터와 사이트맵·RSS의 절대 URL로 쓰입니다.
+3. Vercel의 deploy hook URL을 웹 저장소의 `DEPLOY_HOOK_URL` GitHub Secret에 저장합니다.
+4. 아카이브 저장소의 dispatch 대상 저장소를 이 웹 저장소로 지정하고 `BLOG_DISPATCH_TOKEN`을 설정합니다.
+5. `archives/**` 변경이 `archive-updated`를 보내면 `redeploy.yml`이 새 배포를 시작합니다.
 
 제품 결정과 운영 원칙은 [`docs/`](./docs/)에서 확인할 수 있습니다.

@@ -7,9 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 명령어
 
 ```bash
-npm run dev          # vinext 개발 서버 (localhost:3000)
-npm run build        # 프로덕션 빌드 → dist/server/index.js
-npm run lint         # eslint (dist, .next 제외)
+npm run dev          # Next.js 개발 서버 (localhost:3000)
+npm run build        # 프로덕션 빌드 → .next/
+npm run lint         # eslint (.next, out은 설정에서 제외)
 npm run typecheck    # tsc --noEmit
 npm run test         # vitest run (tests/**/*.test.ts, node 환경)
 npm run test:render  # 빌드 산출물 HTML 검증 (build 선행 필수)
@@ -25,7 +25,7 @@ npx playwright test tests/e2e/archive.spec.ts --project=chromium
 node --test tests/rendered-html.test.mjs
 ```
 
-`npm run check`가 CI(`.github/workflows/ci.yml`)에서 그대로 실행되는 게이트다. `test:render`는 `dist/server/index.js`를 직접 import 하므로 빌드 없이 단독 실행하면 실패한다.
+`npm run check`가 CI(`.github/workflows/ci.yml`)에서 그대로 실행되는 게이트다. `test:render`는 `next start`로 프로덕션 서버를 띄워 HTTP로 확인하므로 빌드 없이 단독 실행하면 실패한다.
 
 ## 아키텍처
 
@@ -57,9 +57,9 @@ node --test tests/rendered-html.test.mjs
 
 ### 런타임
 
-Next.js App Router 코드지만 Next.js로 빌드하지 않는다. `vinext` + `@vitejs/plugin-rsc` + `@cloudflare/vite-plugin` 조합으로 Cloudflare Worker 번들을 만들고, `worker/index.ts`가 진입점이다. Worker는 `/_vinext/image`만 가로채 Cloudflare Images로 최적화하고 나머지는 vinext 핸들러에 넘긴다. `next.config.ts`는 사실상 비어 있으며 실제 빌드 설정은 `vite.config.ts`에 있다.
+Next.js App Router를 표준 Next.js로 빌드한다. 이전에는 `vinext` + Vite로 Cloudflare Worker 번들을 만들었으나, Vercel 배포로 옮기면서 `next` 자체를 쓰도록 되돌렸다. `next.config.ts`는 비어 있고 추가 빌드 설정이 없다.
 
-페이지는 `export const dynamic = "force-static"`으로 빌드 시 정적 생성된다. 서버 컴포넌트가 `getArchiveSessions()`를 호출해 데이터를 내려주고, 클라이언트 컴포넌트는 `components/ArchiveExplorer.tsx` 하나뿐이다.
+모든 라우트는 빌드 시 정적으로 생성된다. 홈은 `export const dynamic = "force-static"`, 동적 구간은 `generateStaticParams()`, `app/feed.xml/route.ts`는 라우트 핸들러 기본값이 요청마다 실행이라 `force-static`을 명시했다. 서버 컴포넌트가 `getArchiveSessions()`를 호출해 데이터를 내려주고, 클라이언트 컴포넌트는 `components/ArchiveExplorer.tsx` 하나뿐이다.
 
 ### 검색 상태는 URL이 소유한다
 
@@ -82,8 +82,8 @@ Next.js App Router 코드지만 Next.js로 빌드하지 않는다. `vinext` + `@
 
 `NEXT_PUBLIC_SITE_URL`은 메타데이터와 사이트맵·RSS의 절대 URL에 쓰인다. `ARCHIVE_GITHUB_TOKEN`은 선택이며 빌드 중 GitHub API 레이트 리밋을 올리는 용도다.
 
-## 배포 경로가 두 갈래로 기록되어 있다
+## 배포
 
-`README.md`와 `.github/workflows/redeploy.yml`은 Vercel deploy hook을 호출하도록 되어 있지만, 실제 빌드 타깃과 `docs/05-implementation-journey.md`의 공개 URL은 Cloudflare Worker 기반 OpenAI Sites 호스팅(`.openai/hosting.json`)을 가리킨다. 배포 관련 작업 전에 어느 쪽이 현재 운영 경로인지 사용자에게 확인한다.
+운영 배포 경로는 Vercel 프로젝트 하나다. 표준 Next.js 빌드라 Vercel이 저장소를 그대로 빌드하며 어댑터나 추가 설정이 없다. `redeploy.yml`은 Vercel deploy hook URL을 `DEPLOY_HOOK_URL` Secret에서 읽어 호출한다.
 
 원본 저장소의 `archives/**`가 바뀌면 `archive-updated` repository dispatch가 `redeploy.yml`을 깨워 재배포를 트리거한다.

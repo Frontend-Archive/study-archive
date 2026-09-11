@@ -7,9 +7,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Vercel deployment
+      - name: Vercel 재배포 호출
         env:
-          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+          DEPLOY_HOOK_URL: ${{ secrets.DEPLOY_HOOK_URL }}
         run: |
-          test -n "$VERCEL_DEPLOY_HOOK_URL"
-          curl -fsS -X POST "$VERCEL_DEPLOY_HOOK_URL"
+          test -n "$DEPLOY_HOOK_URL"
+          curl -fsS -X POST "$DEPLOY_HOOK_URL"
