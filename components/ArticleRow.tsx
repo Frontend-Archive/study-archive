@@ -155,12 +155,12 @@ export function ArticleRow({
       <ArticleThumbnail url={article.url} frameClassName={thumbnailFrame} />
       <span className="col-start-2 row-start-2 flex min-w-0 flex-col gap-2 layout:col-start-3 layout:row-start-1">
         <a
-          className="grid grid-cols-[minmax(0,1fr)_16px] items-center gap-[10px] transition-[color,transform] duration-200 hover:translate-x-[5px] hover:text-accent-soft motion-reduce:transition-none layout:grid-cols-[minmax(0,1fr)_24px] layout:gap-4"
+          className="group/article grid grid-cols-[minmax(0,1fr)_16px] items-center gap-[10px] transition-colors duration-150 hover:text-accent-soft motion-reduce:transition-none layout:grid-cols-[minmax(0,1fr)_24px] layout:gap-4"
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <strong className="break-keep font-editorial text-base leading-[1.45] font-medium layout:text-lg">
+          <strong className="break-keep font-editorial text-base leading-[1.45] font-medium decoration-1 underline-offset-[5px] group-hover/article:underline layout:text-lg">
             {article.title}
           </strong>
           <i className={`justify-self-end not-italic ${iconColor}`} aria-hidden="true">

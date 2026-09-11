@@ -108,14 +108,14 @@ export default async function Home() {
                   className="group grid grid-cols-[minmax(0,1fr)_auto_20px] items-center gap-x-4 py-[18px]"
                   href={`/topics/${topic.slug}`}
                 >
-                  <strong className="font-editorial text-lg leading-[1.35] font-medium transition-[color,transform] duration-200 group-hover:translate-x-1 group-hover:text-accent motion-reduce:transition-none">
+                  <strong className="font-editorial text-lg leading-[1.35] font-medium decoration-1 underline-offset-[5px] transition-colors duration-150 group-hover:text-accent group-hover:underline motion-reduce:transition-none">
                     {topic.label}
                   </strong>
                   <span className="text-[11px] text-muted">
                     {String(count).padStart(2, "0")}개의 기록
                   </span>
                   <span
-                    className="justify-self-end font-numeral text-lg leading-none text-accent transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none"
+                    className="justify-self-end font-numeral text-lg leading-none text-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
                     aria-hidden="true"
                   >
                     →

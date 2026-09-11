@@ -145,14 +145,14 @@ export default async function MemberPage({
                     href={`/?author=${encodeURIComponent(member.name)}&topic=${topic.slug}#archive`}
                     aria-label={`${topic.label} 관련 기록 보기`}
                   >
-                    <strong className="font-editorial text-xl leading-[1.35] font-medium transition-[color,transform] duration-200 group-hover:translate-x-1 group-hover:text-accent motion-reduce:transition-none">
+                    <strong className="font-editorial text-xl leading-[1.35] font-medium decoration-1 underline-offset-[5px] transition-colors duration-150 group-hover:text-accent group-hover:underline motion-reduce:transition-none">
                       {topic.label}
                     </strong>
                     <span className="font-label text-[9px] leading-none tracking-[0.08em] text-muted layout:text-[10px]">
                       관련 기록 보기
                     </span>
                     <span
-                      className="justify-self-end font-numeral text-xl leading-none text-accent transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none"
+                      className="justify-self-end font-numeral text-xl leading-none text-muted transition-colors duration-150 group-hover:text-accent motion-reduce:transition-none"
                       aria-hidden="true"
                     >
                       →

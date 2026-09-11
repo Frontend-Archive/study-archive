@@ -113,8 +113,18 @@ test("글에서 원문, 작성자, 태그로 이동할 수 있다", async ({ pag
   await expect(
     row.getByRole("link", { name: "React 태그로 기록 보기" }),
   ).toHaveAttribute("href", "/?tag=React#archive");
+  // 주소만 확인하면 목록이 걸러지지 않는 회귀를 놓친다. Link 이동은
+  // popstate를 발생시키지 않아, 주소는 바뀌는데 필터 상태는 이전 검색어에
+  // 머물러 있던 적이 있다. 적용된 조건과 결과까지 확인한다.
   await row.getByRole("link", { name: "React 태그로 기록 보기" }).click();
   await expect(page).toHaveURL(/tag=React/);
+  await expect(page.getByText("태그 #React")).toBeVisible();
+  await expect(page.getByText('검색 “React Compiler”')).toBeHidden();
+  const rows = await page.getByTestId("article-row").all();
+  expect(rows.length).toBeGreaterThan(0);
+  for (const item of rows) {
+    await expect(item).toContainText(/#React/);
+  }
 });
 
 test("모바일에서 모든 메뉴를 사용할 수 있고 가로로 넘치지 않는다", async ({

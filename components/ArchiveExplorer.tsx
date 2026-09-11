@@ -29,6 +29,10 @@ export function ArchiveExplorer({
   const [announcement, setAnnouncement] = useState("");
   const panelRef = useRef<HTMLDivElement>(null);
   const { query, author, tag, topic } = filters;
+  // 라우터가 들고 있는 검색 조건. 태그 링크처럼 Link로 들어온 이동은
+  // popstate를 발생시키지 않으므로, 이 값이 바뀔 때마다 다시 맞춰야 한다.
+  // 이것이 없으면 홈에서 태그를 눌렀을 때 주소만 바뀌고 목록은 그대로였다.
+  const routerSearch = searchParams.toString();
   useEffect(() => {
     const sync = () => {
       const params = new URLSearchParams(window.location.search);
@@ -40,14 +44,14 @@ export function ArchiveExplorer({
       });
     };
     sync();
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, [routerSearch]);
+  useEffect(() => {
     const readyFrame = window.requestAnimationFrame(() => {
       panelRef.current?.setAttribute("data-hydrated", "true");
     });
-    window.addEventListener("popstate", sync);
-    return () => {
-      window.cancelAnimationFrame(readyFrame);
-      window.removeEventListener("popstate", sync);
-    };
+    return () => window.cancelAnimationFrame(readyFrame);
   }, []);
   const update = (
     key: "q" | "author" | "tag" | "topic",
