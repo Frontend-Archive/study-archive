@@ -5,7 +5,7 @@
 이 문서는 Frontend Archive 공개 MVP가 요구사항에서 실제 배포 가능한 결과물로 바뀐 과정을 추적한다. 무엇을 만들었는지만 나열하지 않고, 각 단계에서 어떤 입력을 확인했고 어떤 판단을 내렸으며 어떤 산출물과 검증 결과를 남겼는지 기록한다.
 
 - 작업 기간: 2026-09-08 ~ 2026-09-09
-- 공개 사이트: [frontend-archive-study.junbox98221.chatgpt.site](https://frontend-archive-study.junbox98221.chatgpt.site)
+- 공개 사이트: [study-archive-psi.vercel.app](https://study-archive-psi.vercel.app)
 - 콘텐츠 원본: [Frontend-Archive/archive](https://github.com/Frontend-Archive/archive)
 - 제품 범위: 공개 읽기 전용 MVP
 
@@ -176,7 +176,7 @@ TypeScript strict mode를 사용하는 App Router 구조와 Tailwind CSS 기반 
 MVP 기능, 테스트, 시각 QA, 공개 배포는 완료되었다. 운영자가 이어서 해야 하는 외부 설정은 다음과 같다.
 
 1. Vercel에 이 저장소를 연결한다. 프레임워크 프리셋은 Next.js이고 빌드 설정은 기본값 그대로다.
-2. Vercel 프로젝트 환경 변수에 `NEXT_PUBLIC_SITE_URL`을 실제 운영 도메인으로 설정한다. 코드에 남은 기본값은 이전 호스팅 주소라 이 설정이 없으면 메타데이터와 사이트맵이 잘못된 도메인을 가리킨다.
+2. Vercel 프로젝트 환경 변수에 `NEXT_PUBLIC_SITE_URL`을 실제 운영 도메인으로 설정한다. 설정하지 않으면 `lib/site.ts`의 기본값인 현재 Vercel 도메인을 쓴다.
 3. 웹 저장소 Secret에 Vercel deploy hook URL을 `DEPLOY_HOOK_URL`로 등록하고, 재배포가 Vercel로 나가는지 수동 `workflow_dispatch`로 한 번 확인한다.
 4. `Frontend-Archive/archive`의 `notify-blog.yml`이 새 웹 저장소로 `archive-updated`를 보내도록 대상과 `BLOG_DISPATCH_TOKEN`을 설정한다.
 5. 테스트 Markdown 변경으로 5분 이내 재배포 시작 여부를 확인한다.

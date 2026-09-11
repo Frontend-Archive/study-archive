@@ -1,12 +1,9 @@
 import { getArchiveSessions } from "@/lib/archive";
+import { SITE_URL } from "@/lib/site";
 
 // 다른 페이지와 같이 빌드 시점에 한 번만 만든다. 이 선언이 없으면
 // 라우트 핸들러는 요청마다 실행된다.
 export const dynamic = "force-static";
-
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://frontend-archive-study.sunny-grass-6556.chatgpt.site";
 
 function escapeXml(value: string) {
   return value
@@ -29,7 +26,7 @@ export async function GET() {
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>Frontend Archive</title>
-    <link>${escapeXml(siteUrl)}</link>
+    <link>${escapeXml(SITE_URL)}</link>
     <description>프론트엔드 스터디 구성원이 매 회차 공유한 학습 기록</description>
     <language>ko-KR</language>
     <lastBuildDate>${new Date(`${latestDate}T00:00:00Z`).toUTCString()}</lastBuildDate>

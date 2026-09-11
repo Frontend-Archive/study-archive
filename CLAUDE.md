@@ -80,7 +80,7 @@ Next.js App Router를 표준 Next.js로 빌드한다. 이전에는 `vinext` + Vi
 
 ## 환경 변수
 
-`NEXT_PUBLIC_SITE_URL`은 메타데이터와 사이트맵·RSS의 절대 URL에 쓰인다. `ARCHIVE_GITHUB_TOKEN`은 선택이며 빌드 중 GitHub API 레이트 리밋을 올리는 용도다.
+`NEXT_PUBLIC_SITE_URL`은 메타데이터와 사이트맵·RSS의 절대 URL에 쓰인다. 값은 `lib/site.ts`의 `SITE_URL` 한 곳에서만 읽고, 설정이 없으면 현재 운영 도메인을 기본값으로 쓴다. 끝의 슬래시는 여기서 떼어 내므로 사용하는 쪽은 `${SITE_URL}/about`처럼 그대로 이어 붙인다. `ARCHIVE_GITHUB_TOKEN`은 선택이며 빌드 중 GitHub API 레이트 리밋을 올리는 용도다.
 
 ## 배포
 

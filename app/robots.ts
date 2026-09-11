@@ -1,3 +1,4 @@
 import type { MetadataRoute } from "next";
-const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://frontend-archive-study.sunny-grass-6556.chatgpt.site";
-export default function robots(): MetadataRoute.Robots { return { rules: { userAgent: "*", allow: "/" }, sitemap: `${base}/sitemap.xml` }; }
+import { SITE_URL } from "@/lib/site";
+
+export default function robots(): MetadataRoute.Robots { return { rules: { userAgent: "*", allow: "/" }, sitemap: `${SITE_URL}/sitemap.xml` }; }
